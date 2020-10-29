@@ -102,3 +102,41 @@ def transforma_asiento(str_asiento):
     if str_asiento.find("JUZGADO DE GARANTIA") != -1 or str_asiento.find("TRIBUNAL DE JUICIO ORAL EN LO PENAL") != -1:
         str_asiento = "SANTIAGO"
     return str_asiento
+
+def cambio_nombre_juzgados(str_tribunal):
+        reemplazar_texto = {"1º JUZGADO DE LETRAS": "JUZGADO DE LETRAS",
+                            "6º TRIBUNAL DE JUICIO ORAL EN LO PENAL DE SAN MIGUEL": "SEXTO TRIBUNAL DE JUICIO ORAL EN LO PENAL SANTIAGO",
+                            "10º JUZGADO DE GARANTIA": "DECIMO JUZGADO DE GARANTIA",
+                            "11º JUZGADO DE GARANTIA": "UNDECIMO JUZGADO DE GARANTIA",
+                            "12º JUZGADO DE GARANTIA": "DUODECIMO JUZGADO DE GARANTIA",
+                            "13º JUZGADO DE GARANTIA": "DECIMOTERCER JUZGADO DE GARANTIA",
+                            "14º JUZGADO DE GARANTIA": "DECIMOCUARTO JUZGADO DE GARANTIA",
+                            "15º JUZGADO DE GARANTIA": "DECIMOQUINTO JUZGADO DE GARANTIA",
+                            "TRIBUNAL ORAL EN LO PENAL DE": "TRIBUNAL DE JUICIO ORAL EN LO PENAL",
+                            "1º": "PRIMER",
+                            "2º": "SEGUNDO",
+                            "3º": "TERCER",
+                            "4º": "CUARTO",
+                            "5º": "QUINTO",
+                            "6º": "SEXTO",
+                            "7º": "SEPTIMO",
+                            "8º": "OCTAVO",
+                            "9º": "NOVENO",
+                            "TRIBUNAL DE JUICIO ORAL EN LO PENAL DE DE ": "TRIBUNAL DE JUICIO ORAL EN LO PENAL ",
+                            "TRIBUNAL DE JUICIO ORAL EN LO PENAL DE": "TRIBUNAL DE JUICIO ORAL EN LO PENAL",
+                            "JUZGADO DE GARANTIA DE DE ": "JUZGADO DE GARANTIA ",
+                            "JUZGADO DE GARANTIA DE": "JUZGADO DE GARANTIA",
+                            "JUZGADO DE LETRAS Y GARANTIA DE": "JUZGADO DE LETRAS Y GARANTIA",
+                            "JUZGADO DE LETRAS DE": "JUZGADO DE LETRAS Y GARANTIA",
+                            "LA CALERA": "CALERA",
+                            "PUERTO NATALES": "NATALES",
+                            "PUERTO AYSEN": "AISEN",
+                            "PUERTO CISNES": "CISNES",
+                            "SAN VICENTE DE TAGUA-TAGUA": "SAN VICENTE",
+                            "ACHAO": "QUINCHAO",
+                            "COYHAIQUE": "COIHAIQUE"
+                            }
+        
+        for old, new in reemplazar_texto.items():
+            str_tribunal = str_tribunal.replace(old, new)
+        return str_tribunal
