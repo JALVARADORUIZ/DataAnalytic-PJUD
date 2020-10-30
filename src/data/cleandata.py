@@ -7,6 +7,7 @@ def convierte_fecha(fecha):
     try:
         day,month,year = map(int,fecha.split(sep = "-"))
     except:
+        print(f"no pude ejecutar {fecha}")
         return pd.NaT
     
     return datetime(year,month,day) 
