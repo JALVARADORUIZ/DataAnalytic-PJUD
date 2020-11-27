@@ -7,7 +7,7 @@ def convierte_fecha(fecha):
     try:
         day,month,year = map(int,fecha.split(sep = "-"))
     except:
-        print(f"no pude ejecutar {fecha}")
+        #print(f"no pude ejecutar {fecha}")
         return pd.NaT
     
     return datetime(year,month,day) 
@@ -141,3 +141,10 @@ def cambio_nombre_juzgados(str_tribunal):
         for old, new in reemplazar_texto.items():
             str_tribunal = str_tribunal.replace(old, new)
         return str_tribunal
+    
+
+def cambio_termino_causa(str_termino):
+    if pd.notnull(str_termino):
+        str_termino = str_termino.replace(".","")
+    
+    return str_termino
