@@ -86,3 +86,8 @@ def faltantes_rol(row):
         row['MOTIVO TERMINO'] = str(row['MOTIVO TERMINO']).replace(".","")
         
     return row
+
+def crea_rit(row):
+
+    row['TRIBUNAL_RIT'] = str(row['COD. TRIBUNAL']) + "-" + row['RIT']
+    return row
