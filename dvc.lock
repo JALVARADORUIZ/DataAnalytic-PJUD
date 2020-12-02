@@ -1,0 +1,11 @@
+clean-load_ingresos:
+  cmd: pjud cl-ingresos
+  deps:
+  - path: data/raw/pjud/
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/IngresosMateria.feather
+    md5: 26d763c15c68d657d2d6f6503a49840a
+    size: 112858330

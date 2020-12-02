@@ -1,0 +1,7 @@
+stages:
+  clean-load_ingresos:
+    cmd: pjud cl-ingresos
+    deps:
+    - data/raw/pjud/
+    outs:
+    - data/interim/pjud/IngresosMateria.feather
