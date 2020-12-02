@@ -1,4 +1,4 @@
-['remote "storage"']
-    url = gs://escuelita-pjud
+[core]
+    remote = origin
 ['remote "origin"']
     url = https://dagshub.com/Escuelita/DataAnalytic-PJUD.dvc
