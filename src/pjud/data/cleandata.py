@@ -1,7 +1,10 @@
 import pandas as pd
 from datetime import datetime
-from datetime import timedelta
-
+from pjud import data
+import os
+from tqdm.auto import tqdm
+import numpy as np
+import click
 
 def convierte_fecha(fecha): 
     try:
@@ -148,3 +151,63 @@ def cambio_termino_causa(str_termino):
         str_termino = str_termino.replace(".","")
     
     return str_termino
+
+def load_concatenate_by_filename(needle: str, src_path = "data/raw/pjud"):
+    archivos = os.listdir(src_path)
+    tqdm.pandas()
+
+    dataframes = []
+
+    for archivo in archivos:
+        if archivo.find(needle) != -1:
+            df = pd.read_csv(f"{src_path}/{archivo}", sep=";", encoding='cp850', dtype='unicode', low_memory=True)
+            dataframes.append(df)
+
+    return pd.concat(dataframes)
+
+def carga_limpieza_ingresos_materia():
+    df_ingresos_materia = load_concatenate_by_filename('Ingresos por Materia Penal')
+
+    df_ingresos_materia['TOTAL INGRESOS POR MATERIAS'] = df_ingresos_materia['TOTAL INGRESOS POR MATERIAS'].fillna(
+        df_ingresos_materia['TOTAL INGRESOS POR MATERIAS(*)'])
+    df_ingresos_materia.drop(['N°', 'TOTAL INGRESOS POR MATERIAS(*)'], axis='columns', inplace=True)
+
+    df_ingresos_materia.drop([
+                                 '(*)Se agregó columna total de ingresos, dado que en algunas causas, la materia se repite (error de tramitación)'],
+                             axis='columns', inplace=True)
+
+    # TRANSFORMAMOS DE FLOAT A INTEGER
+
+    df_ingresos_materia['COD. CORTE'] = df_ingresos_materia['COD. CORTE'].fillna(0).astype(np.int16)
+    df_ingresos_materia['COD. TRIBUNAL'] = df_ingresos_materia['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_ingresos_materia['COD. MATERIA'] = df_ingresos_materia['COD. MATERIA'].fillna(0).astype(np.int16)
+    df_ingresos_materia['AÑO INGRESO'] = df_ingresos_materia['AÑO INGRESO'].fillna(0).astype(np.int16)
+    df_ingresos_materia['TOTAL INGRESOS POR MATERIAS'] = df_ingresos_materia['TOTAL INGRESOS POR MATERIAS'].fillna(0).astype(np.int8)
+
+    # Transformamos fechas
+    click.echo('Transformando fechas')
+
+    df_ingresos_materia['FECHA INGRESO'] = df_ingresos_materia['FECHA INGRESO'].progress_apply(convierte_fecha)
+
+    # Elimino espacios en las columnas tipo objetos
+    click.echo('Eliminando espacios en objetos')
+
+    df_ingresos_materia = df_ingresos_materia.progress_apply(elimina_espacios, axis=0)
+
+    # Elimino tildes
+
+    click.echo('Eliminando tildes')
+
+    cols = df_ingresos_materia.select_dtypes(include=["object"]).columns
+    df_ingresos_materia[cols] = df_ingresos_materia[cols].progress_apply(elimina_tilde)
+
+    # Categorizacion
+
+    df_ingresos_materia['CORTE'] = df_ingresos_materia['CORTE'].astype('category')
+
+    tipo_causa = df_ingresos_materia[df_ingresos_materia['TIPO CAUSA'] != 'Ordinaria']
+
+    df_ingresos_materia.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_ingresos_materia, 'IngresosMateria')
+
