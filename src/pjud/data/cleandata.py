@@ -211,3 +211,314 @@ def carga_limpieza_ingresos_materia():
 
     data.save_feather(df_ingresos_materia, 'IngresosMateria')
 
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_terminos_materia():
+    df_termino_materia = load_concatenate_by_filename('Términos por Materia Penal')
+
+    df_metge = df_termino_materia[df_termino_materia['SISTEMA']=='METGE']
+    df_termino_materia.drop(df_metge.index, axis=0, inplace=True)
+
+    # Estandarización de nombres de variables
+
+    df_termino_materia.rename(columns = {'CÓD. CORTE':'COD. CORTE',
+                                        'CÓD. TRIBUNAL':'COD. TRIBUNAL',
+                                        'CÓD. MATERIA':'COD. MATERIA',
+                                        'MOTIVO DE TÉRMINO':'MOTIVO TERMINO',
+                                        'DURACIÓN CAUSA':'DURACION CAUSA',
+                                        'FECHA TÉRMINO':'FECHA TERMINO',
+                                        'MES TÉRMINO':'MES TERMINO',
+                                        'AÑO TÉRMINO':'AÑO TERMINO',
+                                        'TOTAL TÉRMINOS':'TOTAL TERMINOS'
+                                        },inplace = True)
+
+    df_termino_materia.drop(['N°','SISTEMA'], axis = 'columns', inplace = True)
+
+    # TRANSFORMAMOS DE FLOAT A INTEGER
+
+    df_termino_materia['COD. CORTE'] = df_termino_materia['COD. CORTE'].fillna(0).astype(np.int16)
+    df_termino_materia['COD. TRIBUNAL'] = df_termino_materia['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_termino_materia['COD. MATERIA'] = df_termino_materia['COD. MATERIA'].fillna(0).astype(np.int16)
+    df_termino_materia['DURACION CAUSA'] = df_termino_materia['DURACION CAUSA'].fillna(0).astype(np.int16)
+    df_termino_materia['AÑO TERMINO'] = df_termino_materia['AÑO TERMINO'].fillna(0).astype(np.int16)
+    df_termino_materia['TOTAL TERMINOS'] = df_termino_materia['TOTAL TERMINOS'].fillna(0).astype(np.int8)
+
+    # Transformamos formato fecha
+
+    click.echo('Convirtiendo fechas')
+    df_termino_materia['FECHA INGRESO'] = df_termino_materia['FECHA INGRESO'].progress_apply(convierte_fecha)
+    df_termino_materia['FECHA TERMINO'] = df_termino_materia['FECHA TERMINO'].progress_apply(convierte_fecha)
+
+    # Elimino espacios en las columnas tipo objetos
+
+    click.echo('Eliminando espacios')
+    df_termino_materia = df_termino_materia.progress_apply(elimina_espacios, axis=0)
+
+    # Elimino tildes de object
+
+    click.echo('Eliminando tilde')
+    cols = df_termino_materia.select_dtypes(include = ["object"]).columns
+    df_termino_materia[cols] = df_termino_materia[cols].progress_apply(elimina_tilde)
+
+    # Categorizar variables
+
+    df_termino_materia['CORTE'] = df_termino_materia['CORTE'].astype('category')
+    df_termino_materia['MOTIVO TERMINO'] = df_termino_materia['MOTIVO TERMINO'].astype('category')
+    
+    #Dejo solo causas Ordinarias
+
+    tipo_causa = df_termino_materia[df_termino_materia['TIPO CAUSA']!='Ordinaria']
+    df_termino_materia.drop(tipo_causa.index, axis=0, inplace=True)
+
+    # Reset el index para realizar feather
+
+    data.save_feather(df_termino_materia, 'TerminoMateria')
+
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_ingresos_rol():
+    df_ingresos_rol = load_concatenate_by_filename('Ingresos por Rol Penal')
+
+    # Transformamos variables float64 a int16
+
+    df_ingresos_rol['COD. CORTE'] = df_ingresos_rol['COD. CORTE'].fillna(0).astype(np.int16)
+    df_ingresos_rol['COD. TRIBUNAL'] = df_ingresos_rol['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_ingresos_rol['AÑO INGRESO'] = df_ingresos_rol['AÑO INGRESO'].fillna(0).astype(np.int16)
+    df_ingresos_rol.drop(['N°'], axis = 'columns', inplace = True)
+
+    click.echo('Transformando Fechas')
+    df_ingresos_rol['FECHA INGRESO'] = df_ingresos_rol['FECHA INGRESO'].progress_apply(convierte_fecha)
+
+    click.echo('Eliminando espacios en columnas objetos')
+    df_ingresos_rol = df_ingresos_rol.progress_apply(elimina_espacios, axis=0)
+
+    click.echo('Eliminando tildes')
+    cols = df_ingresos_rol.select_dtypes(include = ["object"]).columns
+    df_ingresos_rol[cols] = df_ingresos_rol[cols].progress_apply(elimina_tilde)
+
+    # Transformamos en variables categoricas
+
+    df_ingresos_rol['CORTE'] = df_ingresos_rol['CORTE'].astype('category')
+
+    # Elimina de causas que no sean del tipo ordinaria
+    tipo_causa = df_ingresos_rol[df_ingresos_rol['TIPO CAUSA']!='Ordinaria']
+    df_ingresos_rol.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_ingresos_rol,'IngresosRol')
+
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_terminos_rol():
+    df_termino_rol = load_concatenate_by_filename('Términos por Rol Penal')
+
+    # Elimino causas que no sean SIAGJ
+    df_no_siagj = df_termino_rol[df_termino_rol['SISTEMA']!='SIAGJ']
+    df_termino_rol.drop(df_no_siagj.index, axis=0, inplace=True)
+
+    # Elimino filas vacias o con datos NaN
+    df_termino_rol = df_termino_rol.dropna()
+    df_termino_rol.drop(['N°','SISTEMA'], axis = 'columns', inplace = True)
+
+    # Cambio de nombre a algunas columnas para dejarlas iguales a otros dataframes
+
+    df_termino_rol.rename(columns = {'CÓD. CORTE':'COD. CORTE',
+                                'CÓD. TRIBUNAL':'COD. TRIBUNAL',
+                                'DURACIÓN CAUSA ':'DURACION CAUSA',
+                                'MOTIVO DE TÉRMINO':'MOTIVO TERMINO',
+                                'FECHA TÉRMINO':'FECHA TERMINO',
+                                'MES TÉRMINO':'MES TERMINO',
+                                'AÑO TÉRMINO':'AÑO TERMINO',
+                                'TOTAL TÉRMINOS':'TOTAL TERMINOS'
+                                }, inplace = True) 
+    # Transformamos variables float64 a int16
+
+    df_termino_rol['COD. CORTE'] = df_termino_rol['COD. CORTE'].fillna(0).astype(np.int16)
+    df_termino_rol['COD. TRIBUNAL'] = df_termino_rol['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_termino_rol['DURACION CAUSA'] = df_termino_rol['DURACION CAUSA'].fillna(0).astype(np.int16)
+    df_termino_rol['AÑO TERMINO'] = df_termino_rol['AÑO TERMINO'].fillna(0).astype(np.int16)
+    df_termino_rol['TOTAL TERMINOS'] = df_termino_rol['TOTAL TERMINOS'].fillna(0).astype(np.int8)
+
+    click.echo('Elimino tildes de las columnas object')
+    cols = df_termino_rol.select_dtypes(include = ["object"]).columns
+    df_termino_rol[cols] = df_termino_rol[cols].progress_apply(elimina_tilde)
+
+    click.echo('Transformando fechas')
+    df_termino_rol['FECHA INGRESO'] = df_termino_rol['FECHA INGRESO'].progress_apply(convierte_fecha)
+    df_termino_rol['FECHA TERMINO'] = df_termino_rol['FECHA TERMINO'].progress_apply(convierte_fecha) 
+
+    click.echo('Elimino espacios en las columnas tipo objeto')
+    df_termino_rol = df_termino_rol.progress_apply(elimina_espacios, axis=0)
+
+    # Transformamos en variables categoricas
+
+    df_termino_rol['CORTE'] = df_termino_rol['CORTE'].astype('category')
+    df_termino_rol['MOTIVO TERMINO'] = df_termino_rol['MOTIVO TERMINO'].astype('category')
+
+    # Dejo solo causas Ordinarias
+    tipo_causa = df_termino_rol[df_termino_rol['TIPO CAUSA']!='Ordinaria']
+    df_termino_rol.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_termino_rol,'TerminoRol')
+
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_inventario():
+    df_inventario = load_concatenate_by_filename('Inventario Causas en Tramitación Penal')
+
+    # Elimino registros de METGE
+    df_metge = df_inventario[df_inventario['SISTEMA']=='METGE']
+    df_inventario.drop(df_metge.index, axis=0, inplace=True)
+
+    # ESTANDARIZACION DE NOMBRES DE VARIABLES 
+
+    df_inventario.rename(columns = {'CÓDIGO CORTE':'COD. CORTE',
+                                    'CÓDIGO TRIBUNAL':'COD. TRIBUNAL',
+                                    'CÓDIGO MATERIA':'COD. MATERIA',
+                                    ' MATERIA':'MATERIA'
+                                    }, inplace = True)
+
+    df_inventario.drop(['SISTEMA'], axis = 'columns', inplace = True)
+
+    # TRANSFORMAMOS DE FLOAT A INTEGER
+
+    df_inventario['COD. CORTE'] = df_inventario['COD. CORTE'].fillna(0).astype(np.int16)
+    df_inventario['COD. TRIBUNAL'] = df_inventario['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_inventario['COD. MATERIA'] = df_inventario['COD. MATERIA'].fillna(0).astype(np.int16)
+    df_inventario['TOTAL INVENTARIO'] = df_inventario['TOTAL INVENTARIO'].fillna(0).astype(np.int8)
+
+    
+    click.echo('Transformamos fechas')
+    df_inventario['FECHA INGRESO'] = df_inventario['FECHA INGRESO'].progress_apply(convierte_fecha)
+    df_inventario['FECHA ULT. DILIGENCIA'] = df_inventario['FECHA ULT. DILIGENCIA'].progress_apply(convierte_fecha)
+
+    click.echo('Elimino espacios en las columnas tipo objetos')
+    df_inventario = df_inventario.progress_apply(elimina_espacios, axis=0)
+
+    click.echo('Elimino tildes de las columnas object')
+    cols = df_inventario.select_dtypes(include = ["object"]).columns
+    df_inventario[cols] = df_inventario[cols].progress_apply(elimina_tilde)
+
+    # CATEGORIZACION DE VARIABLES
+
+    df_inventario['CORTE'] = df_inventario['CORTE'].astype('category')
+    df_inventario['COMPETENCIA'] = df_inventario['COMPETENCIA'].astype('category')
+    df_inventario['TIPO ULT. DILIGENCIA'] = df_inventario['TIPO ULT. DILIGENCIA'].astype('category')
+
+    # Dejo solo causas Ordinarias
+    tipo_causa = df_inventario[df_inventario['TIPO CAUSA']!='Ordinaria']
+    df_inventario.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_inventario,'Inventario')
+
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_audiencias():
+    df_audiencias = load_concatenate_by_filename('Audiencias Realizadas Penal')
+
+    df_audiencias.rename(columns = {'CÓD. CORTE':'COD. CORTE',
+                                    'CÓD. TRIBUNAL':'COD. TRIBUNAL',
+                                    'DURACIÓN  AUDIENCIA':'DURACION AUDIENCIA',
+                                    'AGENDAMIENTO (DÍAS CORRIDOS)':'DIAS AGENDAMIENTO',
+                                    'DURACIÓN AUDIENCIA (MINUTOS)':'DURACION AUDIENCIA (MIN)',
+                                    'FECHA PROGRAMACIÓN AUDIENCIA':'FECHA PROGRAMACION AUDIENCIA'
+                                },
+                        inplace = True)
+
+    # TRANSFORMAMOS DE FLOAT A INTEGER
+
+    df_audiencias['COD. CORTE'] = df_audiencias['COD. CORTE'].fillna(0).astype(np.int16)
+    df_audiencias['COD. TRIBUNAL'] = df_audiencias['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_audiencias['TOTAL AUDIENCIAS'] = df_audiencias['TOTAL AUDIENCIAS'].fillna(0).astype(np.int8)
+
+    # Podemos observar que existen columnas que se repiten, y que tienen datos NAN en algunas pero esos datos 
+    # en otras columnas, pasa en TIPO AUDIENCIA=TIPO DE AUDIENCIA, AGENDAMIENTO (DÍAS CORRIDOS)=PLAZO AGENDAMIENTO
+    # (DÍAS CORRIDOS), DURACIÓN AUDIENCIA (MINUTOS)= DURACIÓN AUDIENCIA
+
+    df_audiencias['TIPO DE AUDIENCIA'] = df_audiencias['TIPO DE AUDIENCIA'].fillna(df_audiencias['TIPO AUDIENCIA'])
+    df_audiencias['DIAS AGENDAMIENTO'] = df_audiencias['DIAS AGENDAMIENTO'].fillna(df_audiencias['PLAZO AGENDAMIENTO (DIAS CORRIDOS)']).astype(np.int16)
+    df_audiencias['DURACION AUDIENCIA (MIN)'] = df_audiencias['DURACION AUDIENCIA (MIN)'].fillna(df_audiencias['DURACION AUDIENCIA'])
+
+    # Elimino las columnas reemplazadas
+
+    df_audiencias.drop(['TIPO AUDIENCIA','PLAZO AGENDAMIENTO (DIAS CORRIDOS)','DURACION AUDIENCIA'], axis = 'columns', 
+                        inplace = True)
+
+    click.echo('Transformamos fechas')
+
+    df_audiencias['FECHA PROGRAMACION AUDIENCIA'] = df_audiencias['FECHA PROGRAMACION AUDIENCIA'].progress_apply(convierte_fecha)
+    df_audiencias['FECHA AUDIENCIA'] = df_audiencias['FECHA AUDIENCIA'].progress_apply(convierte_fecha)
+
+    click.echo('Elimino espacios en las columnas tipo objetos')
+
+    df_audiencias = df_audiencias.progress_apply(elimina_espacios, axis=0)
+    
+    click.echo('Elimino tildes') 
+    cols = df_audiencias.select_dtypes(include = ["object"]).columns
+    df_audiencias[cols] = df_audiencias[cols].progress_apply(elimina_tilde)
+
+    # Categorizar
+
+    df_audiencias['CORTE'] = df_audiencias['CORTE'].astype('category')
+
+    # Dejo solo causas Ordinarias
+    tipo_causa = df_audiencias[df_audiencias['TIPO CAUSA']!='Ordinaria']
+    df_audiencias.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_audiencias,'Audiencias')
+
+    click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_duraciones():
+    df_duraciones = load_concatenate_by_filename('Duraciones por Rol Penal')
+
+    # Elimino causas que no sean SIAGJ
+    df_no_siagj = df_duraciones[df_duraciones['SISTEMA']!='SIAGJ']
+    df_duraciones.drop(df_no_siagj.index, axis=0, inplace=True)
+
+    df_duraciones.rename(columns = {'CÓD. CORTE':'COD. CORTE',
+                                    'CÓD. TRIBUNAL':'COD. TRIBUNAL',
+                                    'DURACIÓN CAUSA ':'DURACIÓN CAUSA',
+                                    'FECHA TÉRMINO':'FECHA TERMINO',
+                                    'MOTIVO DE TÉRMINO':'MOTIVO TERMINO',
+                                    'MES TÉRMINO':'MES TERMINO',
+                                    'AÑO TÉRMINO':'AÑO TERMINO',
+                                    'TOTAL TÉRMINOS':'TOTAL TERMINOS'
+                                    }, inplace = True)
+
+    df_duraciones.drop(['N°','SISTEMA'], axis = 'columns', inplace = True)
+    df_duraciones = df_duraciones.dropna()
+
+    # TRANSFORMAMOS DE FLOAT A INTEGER
+
+    df_duraciones['COD. CORTE'] = df_duraciones['COD. CORTE'].fillna(0).astype(np.int16)
+    df_duraciones['COD. TRIBUNAL'] = df_duraciones['COD. TRIBUNAL'].fillna(0).astype(np.int16)
+    df_duraciones['AÑO TERMINO'] = df_duraciones['AÑO TERMINO'].fillna(0).astype(np.int16)
+    df_duraciones['TOTAL TERMINOS'] = df_duraciones['TOTAL TERMINOS'].fillna(0).astype(np.int8)
+
+    click.echo('Transformamos fechas')
+
+    df_duraciones['FECHA INGRESO'] = df_duraciones['FECHA INGRESO'].progress_apply(convierte_fecha)
+    df_duraciones['FECHA TERMINO'] = df_duraciones['FECHA TERMINO'].progress_apply(convierte_fecha)
+
+    click.echo('Elimino espacios en las columnas tipo objetos')
+
+    df_duraciones = df_duraciones.progress_apply(elimina_espacios, axis=0)
+
+    click.echo('Elimino tildes')
+    cols = df_duraciones.select_dtypes(include = ["object"]).columns
+    df_duraciones[cols] = df_duraciones[cols].progress_apply(elimina_tilde) 
+
+    click.echo('Transformar el formato del RIT--AÑO a RIT-AÑO')
+    df_duraciones['RIT'] = df_duraciones['RIT'].progress_apply(limpia_rit)
+
+    # Categorizacion
+
+    df_duraciones['CORTE'] = df_duraciones['CORTE'].astype('category')
+    df_duraciones['MOTIVO TERMINO'] = df_duraciones['MOTIVO TERMINO'].astype('category')
+
+    # Dejo solo causas Ordinarias
+    tipo_causa = df_duraciones[df_duraciones['TIPO CAUSA']!='Ordinaria']
+    df_duraciones.drop(tipo_causa.index, axis=0, inplace=True)
+
+    data.save_feather(df_duraciones, 'Duraciones')
+    click.echo('Generado archivo Feather. Proceso Terminado')
