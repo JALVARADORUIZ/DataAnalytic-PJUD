@@ -34,6 +34,18 @@ def wrapper_carga_limpieza_audiencias():
 def wrapper_carga_limpieza_duraciones():
     cleandata.carga_limpieza_duraciones()
 
+@main.command('cl-delitos')
+def wrapper_carga_limpieza_delitos():
+    cleandata.carga_limpieza_delitos()
+
 @main.command('org-garantia')
 def wrapper_garantia():
     jurisdicciones.garantia()
+
+@main.command('org-top')
+def wrapper_garantia():
+    jurisdicciones.top()
+
+@main.command('org-jletras')
+def wrapper_juzgados_letras():
+    jurisdicciones.juzgados_letras()

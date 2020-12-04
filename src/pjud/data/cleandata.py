@@ -522,3 +522,87 @@ def carga_limpieza_duraciones():
 
     data.save_feather(df_duraciones, 'Duraciones')
     click.echo('Generado archivo Feather. Proceso Terminado')
+
+def carga_limpieza_delitos():
+    tqdm.pandas()
+    path_raw = "data/raw/delitos"
+    codigos_delitos = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "codigos vigentes")
+    
+    # elimino filas con NaN
+    codigos_delitos = codigos_delitos.drop_duplicates() 
+    # elimino 2 primeras filas que son titulos
+    codigos_delitos = codigos_delitos.drop([0,1,2], axis = 0) 
+
+    # elimino columnas con datos NaN
+
+    variables = range(2,248)
+    columnas = []
+
+    for variable in variables:
+        columnas.append("Unnamed: " + str(variable))
+
+    codigos_delitos = codigos_delitos.drop(columns = columnas, axis = 1)
+    
+    # cambio nombres columnas
+    codigos_delitos = codigos_delitos.rename(columns = {'VERSION AL 01/01/2018':'COD. MATERIA', 'Unnamed: 1':'MATERIA'})    
+
+    delitos_vigentes = []
+
+    for item in codigos_delitos.index:
+        if str(codigos_delitos['COD. MATERIA'][item]).isupper():
+            tipologia_delito=str(codigos_delitos['COD. MATERIA'][item])
+        else:
+            delitos_vigentes.append([codigos_delitos['COD. MATERIA'][item],
+                                    str(codigos_delitos['MATERIA'][item]).upper().rstrip(),
+                                    tipologia_delito,'VIGENTE'])
+    
+    df_delitos_vigentes = pd.DataFrame(delitos_vigentes,columns = ['COD. MATERIA','MATERIA','TIPOLOGIA MATERIA','VIGENCIA MATERIA'])
+
+    click.echo('Elimino tildes de las columnas object')
+
+    cols = df_delitos_vigentes.select_dtypes(include = ["object"]).columns
+    df_delitos_vigentes[cols] = df_delitos_vigentes[cols].progress_apply(elimina_tilde)
+    df_delitos_vigentes[cols] = df_delitos_vigentes[cols].progress_apply(limpieza_caracteres)
+
+    df_delitos_vigentes['COD. MATERIA'] = df_delitos_vigentes['COD. MATERIA'].fillna(0).astype('int16')
+
+    # CARGA Y LIMPIEZA DE DATOS RELACIONADOS A DELITOS NO VIGENTES
+    codigos_delitos_novigentes = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "Codigos no vigentes")
+
+    # cambio nombres columnas
+
+    codigos_delitos_novigentes = codigos_delitos_novigentes.rename(columns = {'MATERIAS PENALES NO VIGENTES':'TIPOLOGIA MATERIA',
+                                                                            'Unnamed: 1':'COD. MATERIA','Unnamed: 2':'MATERIA'})
+    # elimino primera fila que son titulos
+    codigos_delitos_novigentes = codigos_delitos_novigentes.drop([0], axis = 0) 
+    # reemplazo Nan por ST
+    codigos_delitos_novigentes = codigos_delitos_novigentes.fillna('ST') 
+
+    delitos_no_vigentes = []
+    for item in codigos_delitos_novigentes.index:
+        
+        tipologia_delito = codigos_delitos_novigentes['TIPOLOGIA MATERIA'][item]
+        
+        if tipologia_delito != 'ST':
+            tipologia = codigos_delitos_novigentes['TIPOLOGIA MATERIA'][item]
+        else:
+            tipologia_delito = tipologia
+        
+        delitos_no_vigentes.append([codigos_delitos_novigentes['COD. MATERIA'][item],
+                                    codigos_delitos_novigentes['MATERIA'][item].rstrip(),
+                                    tipologia_delito,'NO VIGENTE'])
+
+    df_delitos_no_vigentes = pd.DataFrame(delitos_no_vigentes, columns = ['COD. MATERIA','MATERIA','TIPOLOGIA MATERIA','VIGENCIA MATERIA'])
+
+    click.echo('Elimino tildes de las columnas object')
+
+    cols = df_delitos_no_vigentes.select_dtypes(include = ["object"]).columns
+    df_delitos_no_vigentes[cols] = df_delitos_no_vigentes[cols].progress_apply(elimina_tilde)
+
+    df_delitos_no_vigentes['COD. MATERIA'] = df_delitos_no_vigentes['COD. MATERIA'].astype('int16')
+
+    # UNION DE AMBOS DATASET CON DELITOS VIGENTES Y NO VIGENTES
+    df_delitos = pd.concat([df_delitos_vigentes,df_delitos_no_vigentes])
+
+    data.save_feather(df_delitos,'Delitos',path='data/processed/delitos')
+    click.echo('Generado archivo Feather. Proceso Terminado')
