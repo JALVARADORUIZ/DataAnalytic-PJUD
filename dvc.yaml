@@ -1,7 +1,14 @@
 stages:
   clean-load_ingresos:
-    cmd: pjud cl-ingresos
+    cmd: pjud clean-ingresos-materia
     deps:
     - data/raw/pjud/
     outs:
     - data/interim/pjud/IngresosMateria.feather
+
+  clean-load_terminos:
+    cmd: pjud clean-terminos-materia
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/TerminoMateria.feather
