@@ -1,5 +1,5 @@
 import click
-from pjud.data import cleandata, jurisdicciones, comunal, dataprocessing, transformdata
+from pjud.data import cleandata, jurisdicciones, comunal, dataprocessing, transformdata, dataconsolidated
 
 @click.group()
 def main():
@@ -77,3 +77,27 @@ def wrapper_processing_audiencias():
 @main.command('process-inventario')
 def wrapper_processing_inventario():
     dataprocessing.processing_inventario()
+
+@main.command('process-duracion')
+def wrapper_processing_duracion():
+    dataprocessing.processing_duracion()
+
+@main.command('process-cortes')
+def wrapper_processing_data_cortes():
+    dataprocessing.processing_data_cortes()
+
+@main.command('consolidate-materia')
+def wrapper_consolidated_materia():
+    dataconsolidated.consolidated_materia()
+
+@main.command('consolidate-rol')
+def wrapper_consolidated_rol():
+    dataconsolidated.consolidated_rol()
+
+@main.command('consolidate-materia-rol')
+def wrapper_consolidated_materia_rol():
+    dataconsolidated.consolidated_materia_rol()
+
+@main.command('consolidate-fulldata')
+def wrapper_consolidated_full():
+    dataconsolidated.consolidated_full()
