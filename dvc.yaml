@@ -12,3 +12,80 @@ stages:
     - data/raw/pjud
     outs:
     - data/interim/pjud/TerminoMateria.feather
+  clean-load_ingresos_rol:
+    cmd: pjud clean-ingresos-rol
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/IngresosRol.feather
+  clean-load_terminos_rol:
+    cmd: pjud clean-terminos-rol
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/TerminoRol.feather
+  clean-load_inventario:
+    cmd: pjud clean-inventario
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/Inventario.feather
+  clean-load_audiencias:
+    cmd: pjud clean-audiencias
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/Audiencias.feather
+  clean-load_duraciones:
+    cmd: pjud clean-duraciones
+    deps:
+    - data/raw/pjud
+    outs:
+    - data/interim/pjud/Duraciones.feather
+  clean-load_delitos:
+    cmd: pjud clean-delitos
+    deps:
+    - data/raw/delitos
+    outs:
+    - data/processed/delitos/Delitos.feather
+  org-garantia:
+    cmd: pjud organic-garantia
+    deps:
+    - data/raw/cot
+    outs:
+    - data/interim/pjud/JuzgadosGarantia.feather
+  org-top:
+    cmd: pjud organic-top
+    deps:
+    - data/raw/cot
+    outs:
+    - data/interim/pjud/TribunalOral.feather
+  org-jletras:
+    cmd: pjud organic-jletras
+    deps:
+    - data/raw/cot
+    outs:
+    - data/interim/pjud/JuzgadosLetras.feather
+  org-jpenales:
+    cmd: pjud organic-jpenales
+    deps:
+    - data/interim/pjud
+    - data/interim/subdere
+    outs:
+    - data/processed/pjud/JuzgadosPenales.feather
+    - data/processed/pjud/ListadoTribunales.feather
+    - data/processed/pjud/TribunalesOrales.feather
+    - data/processed/subdere/DataRegiones.feather
+  crea-comunas:
+    cmd: pjud create-comunas
+    deps:
+    - data/raw/subdere
+    outs:
+    - data/interim/subdere/Provincias.feather
+  crea-censo:
+    cmd: pjud create-censo
+    deps:
+    - data/interim/subdere
+    - data/raw/censo
+    outs:
+    - data/processed/censo/Censo2017.feather

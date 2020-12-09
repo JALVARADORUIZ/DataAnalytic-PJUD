@@ -20,3 +20,152 @@ clean-load_terminos:
   - path: data/interim/pjud/TerminoMateria.feather
     md5: fd8d9594a5a6e9dc174681e573a7bd42
     size: 160620402
+clean-load_ingresos_rol:
+  cmd: pjud clean-ingresos-rol
+  deps:
+  - path: data/raw/pjud
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/IngresosRol.feather
+    md5: 158a363a3a6dad85b96ee33780532788
+    size: 71071506
+clean-load_terminos_rol:
+  cmd: pjud clean-terminos-rol
+  deps:
+  - path: data/raw/pjud
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/TerminoRol.feather
+    md5: cfdd48f1acaf242e7657883422e9ac17
+    size: 113720562
+clean-load_inventario:
+  cmd: pjud clean-inventario
+  deps:
+  - path: data/raw/pjud
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/Inventario.feather
+    md5: e30004c4749da6408e6c9bf8f0896bef
+    size: 67021826
+clean-load_audiencias:
+  cmd: pjud clean-audiencias
+  deps:
+  - path: data/raw/pjud
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/Audiencias.feather
+    md5: 2da44c8e7dc5f7148eae79b91ce7785f
+    size: 236879210
+clean-load_duraciones:
+  cmd: pjud clean-duraciones
+  deps:
+  - path: data/raw/pjud
+    md5: 7d9f1a7c47962dcede57c8921e15a3a3.dir
+    size: 4427791527
+    nfiles: 35
+  outs:
+  - path: data/interim/pjud/Duraciones.feather
+    md5: a12534bc27be03cb5a63a1203abaf3cd
+    size: 127627162
+clean-load_delitos:
+  cmd: pjud clean-delitos
+  deps:
+  - path: data/raw/delitos
+    md5: c8e4b515fc4679dd5299994a2ca0bf3c.dir
+    size: 153899
+    nfiles: 1
+  outs:
+  - path: data/processed/delitos/Delitos.feather
+    md5: 77f6a97238ab33066de07f60f0932cb2
+    size: 30898
+org-garantia:
+  cmd: pjud organic-garantia
+  deps:
+  - path: data/raw/cot
+    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
+    size: 37665
+    nfiles: 3
+  outs:
+  - path: data/interim/pjud/JuzgadosGarantia.feather
+    md5: d108108911c25c72efcbb4cbb6c2951e
+    size: 15202
+org-top:
+  cmd: pjud organic-top
+  deps:
+  - path: data/raw/cot
+    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
+    size: 37665
+    nfiles: 3
+  outs:
+  - path: data/interim/pjud/TribunalOral.feather
+    md5: 2a6ff0991efcde31cc272af56c9a936f
+    size: 16394
+org-jletras:
+  cmd: pjud organic-jletras
+  deps:
+  - path: data/raw/cot
+    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
+    size: 37665
+    nfiles: 3
+  outs:
+  - path: data/interim/pjud/JuzgadosLetras.feather
+    md5: d6781ac394d5f3cb84d9edc6a33840cb
+    size: 15338
+org-jpenales:
+  cmd: pjud organic-jpenales
+  deps:
+  - path: data/interim/pjud
+    md5: ca36058d4af101e291cde774f9140f0f.dir
+    size: 889872506
+    nfiles: 12
+  - path: data/interim/subdere
+    md5: b663c18ddcb9ac209de41a86bcc5e417.dir
+    size: 21318
+    nfiles: 2
+  outs:
+  - path: data/processed/pjud/JuzgadosPenales.feather
+    md5: 9a83796226be34cf5cd119f718cd8641
+    size: 18778
+  - path: data/processed/pjud/ListadoTribunales.feather
+    md5: 19ff7e3c5956c07bbf5430775340c80e
+    size: 28130
+  - path: data/processed/pjud/TribunalesOrales.feather
+    md5: a60b10955682ebcd899014e5f4fdaccc
+    size: 18354
+  - path: data/processed/subdere/DataRegiones.feather
+    md5: 99abd0eba39b8748447f3ce637e4eb50
+    size: 17010
+crea-comunas:
+  cmd: pjud create-comunas
+  deps:
+  - path: data/raw/subdere
+    md5: 17b233813275745d1ff76683ae59cf8d.dir
+    size: 69632
+    nfiles: 1
+  outs:
+  - path: data/interim/subdere/Provincias.feather
+    md5: 9cbc8ee4d5280d968ded2fd6a9ef68be
+    size: 15170
+crea-censo:
+  cmd: pjud create-censo
+  deps:
+  - path: data/interim/subdere
+    md5: 46bcfa6927c4d3b80ed947cd7adbd814.dir
+    size: 21318
+    nfiles: 2
+  - path: data/raw/censo
+    md5: 18ea5637658160f0b0f384214ed6ba1c.dir
+    size: 9789312
+    nfiles: 1
+  outs:
+  - path: data/processed/censo/Censo2017.feather
+    md5: 8f99ee6ba40ee58534544136eae175f5
+    size: 54210
