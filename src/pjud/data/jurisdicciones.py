@@ -62,7 +62,7 @@ def garantia():
     cols = df_juzgados_garantia.select_dtypes(include = ["object"]).columns
     df_juzgados_garantia[cols] = df_juzgados_garantia[cols].progress_apply(data.cleandata.elimina_tilde)
 
-    data.save_feather(df_juzgados_garantia, 'JuzgadosGarantia')
+    data.save_feather(df_juzgados_garantia, 'generates_JuzgadosGarantia')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def top():
@@ -111,7 +111,7 @@ def top():
     cols = df_tribunal_oral.select_dtypes(include = ["object"]).columns
     df_tribunal_oral[cols] = df_tribunal_oral[cols].progress_apply(data.cleandata.elimina_tilde)
 
-    data.save_feather(df_tribunal_oral,'TribunalOral')
+    data.save_feather(df_tribunal_oral,'generates_TribunalOral')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def juzgados_letras():
@@ -159,7 +159,7 @@ def juzgados_letras():
     cols = df_juzgados_letras.select_dtypes(include = ["object"]).columns
     df_juzgados_letras[cols] = df_juzgados_letras[cols].progress_apply(data.cleandata.elimina_tilde)
 
-    data.save_feather(df_juzgados_letras, 'JuzgadosLetras')
+    data.save_feather(df_juzgados_letras, 'generates_JuzgadosLetras')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def extraccion_comunas(filtro, df):
@@ -184,10 +184,10 @@ def extraccion_comunas(filtro, df):
 def juzgados_penales(path_pjud = "data/interim/pjud", path_subdere = "data/interim/subdere"):
 
     tqdm.pandas()
-    df_juzgados_garantia = pd.read_feather(f"{path_pjud}/JuzgadosGarantia.feather")
-    df_tribunal_oral = pd.read_feather(f"{path_pjud}/TribunalOral.feather")
-    df_juzgados_letras = pd.read_feather(f"{path_pjud}/JuzgadosLetras.feather")
-    df_provincias = pd.read_feather(f"{path_subdere}/Provincias.feather")
+    df_juzgados_garantia = pd.read_feather(f"{path_pjud}/generates_JuzgadosGarantia.feather")
+    df_tribunal_oral = pd.read_feather(f"{path_pjud}/generates_TribunalOral.feather")
+    df_juzgados_letras = pd.read_feather(f"{path_pjud}/generates_JuzgadosLetras.feather")
+    df_provincias = pd.read_feather(f"{path_subdere}/generates_Provincias.feather")
 
     # Existen dos provincias en el listado.
     filtro_provincia_top = df_tribunal_oral[df_tribunal_oral['COMUNA'].str.contains("PROVINCIA", case = False)]
@@ -274,8 +274,8 @@ def juzgados_penales(path_pjud = "data/interim/pjud", path_subdere = "data/inter
     df_juzgados_penales['TRIBUNAL'] = df_juzgados_penales['TRIBUNAL'].progress_apply(data.cleandata.cambio_nombre_juzgados)
     df_listado_tribunales['TRIBUNAL'] = df_listado_tribunales['TRIBUNAL'].progress_apply(data.cleandata.cambio_nombre_juzgados)
 
-    data.save_feather(df_provincias, 'DataRegiones', path='data/processed/subdere')
-    data.save_feather(df_listado_tribunales, 'ListadoTribunales', path='data/processed/pjud')
-    data.save_feather(df_tribunal_oral, 'TribunalesOrales', path='data/processed/pjud')
-    data.save_feather(df_juzgados_penales, 'JuzgadosPenales', path='data/processed/pjud')
+    data.save_feather(df_provincias, 'generates_DataRegiones', path='data/processed/subdere')
+    data.save_feather(df_listado_tribunales, 'generates_ListadoTribunales', path='data/processed/pjud')
+    data.save_feather(df_tribunal_oral, 'generates_TribunalesOrales', path='data/processed/pjud')
+    data.save_feather(df_juzgados_penales, 'generates_JuzgadosPenales', path='data/processed/pjud')
     click.echo('Generado archivo Feather. Proceso Terminado')

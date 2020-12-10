@@ -33,16 +33,15 @@ def create_comunas(path = "data/raw/subdere"):
     df_provincias.loc[df_provincias['Nombre Comuna'] == 'TILTIL', 'Nombre Comuna'] = 'TIL TIL'
     df_provincias.loc[df_provincias['Nombre Comuna'] == 'EL OLIVAR', 'Nombre Comuna'] = 'OLIVAR'
 
-    data.save_feather(df_provincias, 'Provincias', path='./data/interim/subdere')
+    data.save_feather(df_provincias, 'generates_Provincias', path='./data/interim/subdere')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def load_data_censo(path_subdere = "data/interim/subdere", path_censo = "data/raw/censo"):
+def load_data_censo(path = "data/raw/censo"):
     tqdm.pandas()
 
     # Analizo contra los datos extraidos en COT
 
-    df_comunas = pd.read_feather(f"{path_subdere}/Provincias.feather")
-    df_censo = pd.read_excel(f"{path_censo}/1_1_POBLACION.xls", sheet_name = "Comuna")
+    df_censo = pd.read_excel(f"{path}/1_1_POBLACION.xls", sheet_name = "Comuna")
 
     df_censo.drop(['Unnamed: 0'], axis='columns', inplace=True)
     df_censo.drop(0, axis='rows', inplace=True)
@@ -71,7 +70,7 @@ def load_data_censo(path_subdere = "data/interim/subdere", path_censo = "data/ra
     seleccion_censo_comunas.loc[seleccion_censo_comunas['NOMBRE COMUNA'] == 'TILTIL', 'NOMBRE COMUNA'] = 'TIL TIL'
     seleccion_censo_comunas.loc[seleccion_censo_comunas['NOMBRE COMUNA'] == 'AYSEN', 'NOMBRE COMUNA'] = 'AISEN'
 
-    data.save_feather(seleccion_censo_comunas, 'Censo2017', path='./data/processed/censo')
+    data.save_feather(seleccion_censo_comunas, 'generates_Censo2017', path='./data/processed/censo')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 

@@ -1,91 +1,165 @@
 stages:
-  clean-load_ingresos:
+  clear-ingresos_materia:
     cmd: pjud clean-ingresos-materia
     deps:
-    - data/raw/pjud/
+    - data/raw/pjud
     outs:
-    - data/interim/pjud/IngresosMateria.feather
-
-  clean-load_terminos:
+    - data/interim/pjud/clean_IngresosMateria.feather
+  clear-terminos_materia:
     cmd: pjud clean-terminos-materia
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/TerminoMateria.feather
-  clean-load_ingresos_rol:
+    - data/interim/pjud/clean_TerminosMateria.feather
+  clear-ingresos_rol:
     cmd: pjud clean-ingresos-rol
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/IngresosRol.feather
-  clean-load_terminos_rol:
+    - data/interim/pjud/clean_IngresosRol.feather
+  clear-terminos_rol:
     cmd: pjud clean-terminos-rol
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/TerminoRol.feather
-  clean-load_inventario:
+    - data/interim/pjud/clean_TerminosRol.feather
+  clear-inventario:
     cmd: pjud clean-inventario
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/Inventario.feather
-  clean-load_audiencias:
+    - data/interim/pjud/clean_Inventario.feather
+  clear-audiencias:
     cmd: pjud clean-audiencias
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/Audiencias.feather
-  clean-load_duraciones:
+    - data/interim/pjud/clean_Audiencias.feather
+  clear-duraciones:
     cmd: pjud clean-duraciones
     deps:
     - data/raw/pjud
     outs:
-    - data/interim/pjud/Duraciones.feather
-  clean-load_delitos:
+    - data/interim/pjud/clean_Duraciones.feather
+  clear-delitos:
     cmd: pjud clean-delitos
     deps:
     - data/raw/delitos
     outs:
-    - data/processed/delitos/Delitos.feather
-  org-garantia:
+    - data/processed/delitos/clean_Delitos.feather
+  generate-jgarantia:
     cmd: pjud organic-garantia
     deps:
     - data/raw/cot
     outs:
-    - data/interim/pjud/JuzgadosGarantia.feather
-  org-top:
+    - data/interim/pjud/generates_JuzgadosGarantia.feather
+  generate-top:
     cmd: pjud organic-top
     deps:
     - data/raw/cot
     outs:
-    - data/interim/pjud/TribunalOral.feather
-  org-jletras:
+    - data/interim/pjud/generates_TribunalOral.feather
+  generate-jletras:
     cmd: pjud organic-jletras
     deps:
     - data/raw/cot
     outs:
-    - data/interim/pjud/JuzgadosLetras.feather
-  org-jpenales:
+    - data/interim/pjud/generates_JuzgadosLetras.feather
+  generate-comunas:
+    cmd: pjud create-comunas
+    deps:
+    - data/raw/subdere
+    outs:
+    - data/interim/subdere/generates_Provincias.feather
+  generate-censo:
+    cmd: pjud create-censo
+    deps:
+    - data/raw/censo
+    outs:
+    - data/processed/censo/generates_Censo2017.feather
+  generate-jpenales:
     cmd: pjud organic-jpenales
     deps:
     - data/interim/pjud
     - data/interim/subdere
     outs:
-    - data/processed/pjud/JuzgadosPenales.feather
-    - data/processed/pjud/ListadoTribunales.feather
-    - data/processed/pjud/TribunalesOrales.feather
-    - data/processed/subdere/DataRegiones.feather
-  crea-comunas:
-    cmd: pjud create-comunas
+    - data/processed/pjud/generates_JuzgadosPenales.feather
+    - data/processed/pjud/generates_ListadoTribunales.feather
+    - data/processed/pjud/generates_TribunalesOrales.feather
+    - data/processed/subdere/generates_DataRegiones.feather
+  process-materia:
+    cmd: pjud process-materia
     deps:
-    - data/raw/subdere
+    - data/interim/pjud
     outs:
-    - data/interim/subdere/Provincias.feather
-  crea-censo:
-    cmd: pjud create-censo
+    - data/processed/pjud/processes_IngresosMateria.feather
+    - data/processed/pjud/processes_TerminosMateria.feather
+  process-rol:
+    cmd: pjud process-rol
     deps:
-    - data/interim/subdere
-    - data/raw/censo
+    - data/interim/pjud
     outs:
-    - data/processed/censo/Censo2017.feather
+    - data/processed/pjud/processes_IngresosRol.feather
+    - data/processed/pjud/processes_TerminosRol.feather
+  process-audiencias:
+    cmd: pjud process-audiencias
+    deps:
+    - data/interim/pjud
+    outs:
+    - data/processed/pjud/processes_Audiencias.feather
+  process-inventario:
+    cmd: pjud process-inventario
+    deps:
+    - data/interim/pjud
+    outs:
+    - data/processed/pjud/processes_Inventario.feather
+  process-duraciones:
+    cmd: pjud process-duracion
+    deps:
+    - data/interim/pjud
+    outs:
+    - data/processed/pjud/processes_Duraciones.feather
+  process-data_cortes:
+    cmd: pjud process-cortes
+    deps:
+    - data/processed/censo/generates_Censo2017.feather
+    - data/processed/pjud/generates_ListadoTribunales.feather
+    - data/processed/pjud/processes_TerminosRol.feather
+    outs:
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Tribunales.feather
+    - data/processed/pjud/processes_ListadoTribunalesyCortes.feather
+  consolidate-materia:
+    cmd: pjud consolidate-materia
+    deps:
+    - data/processed/pjud/processes_IngresosMateria.feather
+    - data/processed/pjud/processes_TerminosMateria.feather
+    outs:
+    - data/processed/pjud/consolidated_CausasGarantiaMateria.feather
+    - data/processed/pjud/consolidated_JuicioOralesMateria.feather
+    - data/processed/pjud/consolidated_Materia.feather
+  consolidate-rol:
+    cmd: pjud consolidate-rol
+    deps:
+    - data/processed/pjud/processes_IngresosRol.feather
+    - data/processed/pjud/processes_TerminosRol.feather
+    outs:
+    - data/processed/pjud/consolidated_CausasGarantiaRol.feather
+    - data/processed/pjud/consolidated_JuicioOralesRol.feather
+    - data/processed/pjud/consolidated_Rol.feather
+  consolidate-materia_rol:
+    cmd: pjud consolidate-materia-rol
+    deps:
+    - data/processed/pjud/consolidated_Materia.feather
+    - data/processed/pjud/consolidated_Rol.feather
+    outs:
+    - data/processed/pjud/consolidated_Materia_Rol.feather
+  consolidate-full_data:
+    cmd: pjud consolidate-fulldata
+    deps:
+    - data/processed/delitos/clean_delitos.feather
+    - data/processed/pjud/consolidated_Materia_Rol.feather
+    - data/processed/pjud/processes_Audiencias.feather
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    outs:
+    - data/processed/pjud/consolidated_FullData.feather

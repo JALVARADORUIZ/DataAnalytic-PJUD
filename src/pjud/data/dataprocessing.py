@@ -9,11 +9,11 @@ from unicodedata import normalize
 from pjud import data
 
 
-def processing_materia(path_interim = "data/interim/pjud", path_processed = "data/processed/pjud"):
+def processing_materia(path_interim = "data/interim/pjud"):
     tqdm.pandas()
 
-    df_ingresos_materia = pd.read_feather(f"{path_interim}/IngresosMateria.feather")
-    df_termino_materia = pd.read_feather(f"{path_interim}/TerminoMateria.feather")
+    df_ingresos_materia = pd.read_feather(f"{path_interim}/clean_IngresosMateria.feather")
+    df_termino_materia = pd.read_feather(f"{path_interim}/clean_TerminosMateria.feather")
     
     click.echo('Normalizando nombres ...') 
 
@@ -79,16 +79,17 @@ def processing_materia(path_interim = "data/interim/pjud", path_processed = "dat
 
     click.echo('Procesando Error en Fechas ...')
     df_termino_materia = df_termino_materia.progress_apply(data.transformdata.fechas_cambiadas, axis=1)
-
-    data.save_feather(df_ingresos_materia, 'IngresosMateria', path_processed)
-    data.save_feather(df_termino_materia, 'TerminoMateria', path_processed)
+    
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_ingresos_materia, 'processes_IngresosMateria', path_processed)
+    data.save_feather(df_termino_materia, 'processes_TerminosMateria', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def processing_rol(path_interim = "data/interim/pjud", path_processed = "data/processed/pjud"):
+def processing_rol(path_interim = "data/interim/pjud"):
     tqdm.pandas()
 
-    df_ingresos_rol = pd.read_feather(f"{path_interim}/IngresosRol.feather")
-    df_termino_rol = pd.read_feather(f"{path_interim}/TerminoRol.feather")
+    df_ingresos_rol = pd.read_feather(f"{path_interim}/clean_IngresosRol.feather")
+    df_termino_rol = pd.read_feather(f"{path_interim}/clean_TerminosRol.feather")
 
     click.echo('Normalizando nombres...')
     df_ingresos_rol['TRIBUNAL'] = df_ingresos_rol['TRIBUNAL'].progress_apply(data.cleandata.cambio_nombre_juzgados)
@@ -100,14 +101,15 @@ def processing_rol(path_interim = "data/interim/pjud", path_processed = "data/pr
     click.echo('Procesando Error en fechas ...')
     df_termino_rol = df_termino_rol.progress_apply(data.transformdata.fechas_cambiadas, axis=1)
 
-    data.save_feather(df_ingresos_rol, 'IngresosRol', path_processed)
-    data.save_feather(df_termino_rol, 'TerminoRol', path_processed)
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_ingresos_rol, 'processes_IngresosRol', path_processed)
+    data.save_feather(df_termino_rol, 'processes_TerminosRol', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def processing_audiencias(path_interim = "data/interim/pjud", path_processed = "data/processed/pjud"):
+def processing_audiencias(path_interim = "data/interim/pjud"):
     tqdm.pandas()
     
-    df_audiencias = pd.read_feather(f"{path_interim}/Audiencias.feather")
+    df_audiencias = pd.read_feather(f"{path_interim}/clean_Audiencias.feather")
 
     click.echo('Procesando Fecha de programación ...')
     df_audiencias = df_audiencias.progress_apply(data.transformdata.fecha_programada, axis=1)
@@ -129,13 +131,14 @@ def processing_audiencias(path_interim = "data/interim/pjud", path_processed = "
     df_eliminar = pd.concat(fuera_rango, axis=0)
     df_audiencias.drop(df_eliminar.index, axis=0, inplace=True)
 
-    data.save_feather(df_audiencias, 'Audiencias', path_processed)
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_audiencias, 'processes_Audiencias', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def processing_inventario(path_interim = "data/interim/pjud", path_processed = "data/processed/pjud"):
+def processing_inventario(path_interim = "data/interim/pjud"):
     tqdm.pandas()
 
-    df_inventario = pd.read_feather(f"{path_interim}/Inventario.feather")
+    df_inventario = pd.read_feather(f"{path_interim}/clean_Inventario.feather")
     filtro_fecha = df_inventario[df_inventario['FECHA INGRESO']<='2014-12-31']
     df_inventario.drop(filtro_fecha.index, axis=0, inplace=True)
 
@@ -162,13 +165,14 @@ def processing_inventario(path_interim = "data/interim/pjud", path_processed = "
     df_inventario.drop(filtro_codigo_31075.index, axis = 0, inplace = True)
     df_inventario.drop(filtro_codigo_0.index, axis = 0, inplace = True)
 
-    data.save_feather(df_inventario, 'Inventario', path_processed)
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_inventario, 'processes_Inventario', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def processing_duracion(path_interim = "data/interim/pjud", path_processed = "data/processed/pjud"):
+def processing_duracion(path_interim = "data/interim/pjud"):
     tqdm.pandas()
 
-    df_duracion = pd.read_feather(f"{path_interim}/Duraciones.feather")
+    df_duracion = pd.read_feather(f"{path_interim}/clean_Duraciones.feather")
 
     filtro_fecha = df_duracion[df_duracion['FECHA INGRESO']<='2014-12-31']
     df_duracion.drop(filtro_fecha.index, axis=0, inplace=True)
@@ -179,16 +183,17 @@ def processing_duracion(path_interim = "data/interim/pjud", path_processed = "da
     click.echo('Normalizando nombres ...')
     df_duracion['TRIBUNAL'] = df_duracion['TRIBUNAL'].progress_apply(data.cleandata.cambio_nombre_juzgados)
 
-    data.save_feather(df_duracion, 'Duraciones', path_processed)
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_duracion, 'processes_Duraciones', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data/processed/censo'):
     tqdm.pandas()
 
-    df_regiones = pd.read_feather(f"{path_pjud}/TerminoRol.feather")
-    df_tribunales = pd.read_feather(f"{path_pjud}/ListadoTribunales.feather")
-    df_censo = pd.read_feather(f"{path_censo}/Censo2017.feather")
-    df_dotacion = pd.read_feather(f"{path_pjud}/ListadoTribunales.feather")
+    df_regiones = pd.read_feather(f"{path_pjud}/processes_TerminosRol.feather")
+    df_tribunales = pd.read_feather(f"{path_pjud}/generates_ListadoTribunales.feather")
+    df_censo = pd.read_feather(f"{path_censo}/generates_Censo2017.feather")
+    #df_dotacion = pd.read_feather(f"{path_pjud}/ListadoTribunales.feather")
 
     # Extraigo Cortes de Apelaciones asociadas a Juzgados desde este DataSet
     data_cortes_apelaciones = pd.unique(df_regiones[['CORTE','TRIBUNAL']].values.ravel())
@@ -267,11 +272,11 @@ def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data
 
     dotacion = []
     for indice in df_poblacion_jurisdiccion.index:
-        for trib in df_dotacion.index:
-            if df_poblacion_jurisdiccion['TRIBUNAL'][indice] == df_dotacion['TRIBUNAL'][trib]:
-                jueces = df_dotacion['JUECES'][trib]
-                asiento = df_dotacion['ASIENTO'][trib]
-                tipo = df_dotacion['TIPO JUZGADO'][trib]
+        for trib in df_tribunales.index:
+            if df_poblacion_jurisdiccion['TRIBUNAL'][indice] == df_tribunales['TRIBUNAL'][trib]:
+                jueces = df_tribunales['JUECES'][trib]
+                asiento = df_tribunales['ASIENTO'][trib]
+                tipo = df_tribunales['TIPO JUZGADO'][trib]
                 row = [jueces, asiento, tipo]
                 dotacion.append(row)
                 break
@@ -280,9 +285,9 @@ def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data
 
     df_poblacion_jurisdiccion = pd.concat([df_poblacion_jurisdiccion,df_anexo], axis=1)
 
-    data.save_feather(df_tribunales, 'ListadoTribunalesyCortes', path_pjud)
-    data.save_feather(df_tribunales_poblacion, 'DataConsolidada_Poblacion_Tribunales', path_pjud)
-    data.save_feather(df_poblacion_jurisdiccion, 'DataConsolidada_Poblacion_Jurisdiccion', path_pjud)
+    data.save_feather(df_tribunales, 'processes_ListadoTribunalesyCortes', path_pjud)
+    data.save_feather(df_tribunales_poblacion, 'processes_DataConsolidada_Poblacion_Tribunales', path_pjud)
+    data.save_feather(df_poblacion_jurisdiccion, 'processes_DataConsolidada_Poblacion_Jurisdiccion', path_pjud)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 

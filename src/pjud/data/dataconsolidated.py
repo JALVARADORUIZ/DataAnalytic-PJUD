@@ -11,8 +11,9 @@ from pjud import data
 def consolidated_materia(path_processed = "data/processed/pjud"):
     tqdm.pandas()
 
-    df_ingresos_materia = pd.read_feather(f"{path_processed}/IngresosMateria.feather")
-    df_termino_materia = pd.read_feather(f"{path_processed}/TerminoMateria.feather")
+    df_ingresos_materia = pd.read_feather(f"{path_processed}/processes_IngresosMateria.feather")
+    df_termino_materia = pd.read_feather(f"{path_processed}/processes_TerminosMateria.feather")
+
     df_fulldata_materia = pd.merge(df_ingresos_materia, df_termino_materia, how='outer', on=['COD. TRIBUNAL','RIT','COD. MATERIA'])
 
     columnas_drop = ['level_0_x', 'index_x', 'level_0_y', 'index_y', 'MES INGRESO', 'MES TERMINO']
@@ -35,16 +36,16 @@ def consolidated_materia(path_processed = "data/processed/pjud"):
     filtro_oral = df_fulldata_materia[df_fulldata_materia['TRIBUNAL'].str.contains('ORAL')]
     filtro_garantia = df_fulldata_materia[df_fulldata_materia['TRIBUNAL'].str.contains('GARANTIA')]
 
-    data.save_feather(df_fulldata_materia, 'Consolidado_Materia', path_processed)
-    data.save_feather(filtro_oral, 'JuicioOralesMateria', path_processed)
-    data.save_feather(filtro_garantia, 'CausasGarantiaMateria', path_processed)
+    data.save_feather(df_fulldata_materia, 'consolidated_Materia', path_processed)
+    data.save_feather(filtro_oral, 'consolidated_JuicioOralesMateria', path_processed)
+    data.save_feather(filtro_garantia, 'consolidated_CausasGarantiaMateria', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def consolidated_rol(path_processed = "data/processed/pjud"):
     tqdm.pandas()
 
-    df_ingresos_rol = pd.read_feather(f"{path_processed}/IngresosRol.feather")
-    df_termino_rol = pd.read_feather(f"{path_processed}/TerminoRol.feather")
+    df_ingresos_rol = pd.read_feather(f"{path_processed}/processes_IngresosRol.feather")
+    df_termino_rol = pd.read_feather(f"{path_processed}/processes_TerminosRol.feather")
 
     df_fulldata_rol = pd.merge(df_ingresos_rol, df_termino_rol, how='outer', on=['COD. TRIBUNAL','RIT'])
 
@@ -71,27 +72,27 @@ def consolidated_rol(path_processed = "data/processed/pjud"):
     df_rit_cero = df_fulldata_rol[df_fulldata_rol['RIT'].str.startswith("0-")]
     df_fulldata_rol.drop(df_rit_cero.index, axis=0, inplace=True)
 
-    data.save_feather(df_fulldata_rol, 'Consolidado_Rol', path_processed)
-    data.save_feather(causas_top, 'JuicioOralesRol', path_processed)
-    data.save_feather(causas_garantia, 'CausasGarantiaRol', path_processed)
+    data.save_feather(df_fulldata_rol, 'consolidated_Rol', path_processed)
+    data.save_feather(causas_top, 'consolidated_JuicioOralesRol', path_processed)
+    data.save_feather(causas_garantia, 'consolidated_CausasGarantiaRol', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def consolidated_materia_rol(path_processed = "data/processed/pjud"):
     tqdm.pandas()
 
-    df_materia = pd.read_feather(f"{path_processed}/Consolidado_Materia.feather")
-    df_rol = pd.read_feather(f"{path_processed}/Consolidado_Rol.feather")
+    df_materia = pd.read_feather(f"{path_processed}/consolidated_Materia.feather")
+    df_rol = pd.read_feather(f"{path_processed}/consolidated_Rol.feather")
 
     df_union = pd.merge(df_materia, df_rol, how='outer', on=['COD. CORTE','COD. TRIBUNAL','RIT'])
     
-    data.save_feather(df_union, 'Consolidado_Materia_Rol', path_processed)
+    data.save_feather(df_union, 'consolidated_Materia_Rol', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def consolidated_full(path_processed = "data/processed/pjud"):
     tqdm.pandas()
 
-    df_causas = pd.read_feather(f"{path_processed}/Consolidado_Materia_Rol.feather")
-    df_audiencias = pd.read_feather(f"{path_processed}/Audiencias.feather")
+    df_causas = pd.read_feather(f"{path_processed}/consolidated_Materia_Rol.feather")
+    df_audiencias = pd.read_feather(f"{path_processed}/processes_Audiencias.feather")
 
     df_consolidado = pd.merge(df_causas,df_audiencias, how='outer', on=['COD. TRIBUNAL','RIT'])
 
@@ -100,11 +101,11 @@ def consolidated_full(path_processed = "data/processed/pjud"):
 
     # Carga Data relacionada a Tipologia de delitos
     path_delitos = 'data/processed/delitos'
-    df_tipologia = pd.read_feather(f"{path_delitos}/Delitos.feather")
+    df_tipologia = pd.read_feather(f"{path_delitos}/clean_Delitos.feather")
     df_consolidado = pd.merge(df_consolidado,df_tipologia, how='outer', on=['COD. MATERIA'])
 
     # Carga Data relacionada a Poblacion
-    df_poblacion = pd.read_feather(f"{path_processed}/DataConsolidada_Poblacion_Jurisdiccion.feather")
+    df_poblacion = pd.read_feather(f"{path_processed}/processes_DataConsolidada_Poblacion_Jurisdiccion.feather")
     df_consolidado = pd.merge(df_consolidado,df_poblacion, how='outer', on=['CORTE','TRIBUNAL'])
 
     columnas_duplicadas = ['index_x', 'index_x','CORTE_x','TRIBUNAL_x','TIPO CAUSA_x','MATERIA_x','FECHA INGRESO_x','AÑO INGRESO_x','FECHA TERMINO_x','AÑO TERMINO_x','MOTIVO TERMINO_x','DURACION CAUSA_x',
@@ -159,5 +160,5 @@ def consolidated_full(path_processed = "data/processed/pjud"):
 
     df_consolidado.drop(df_consolidado[df_consolidado['cod_corte'].isnull()].index, inplace=True)
 
-    data.save_feather(df_consolidado, 'Consolidado_FULL', path_processed)
+    data.save_feather(df_consolidado, 'consolidated_FullData', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')

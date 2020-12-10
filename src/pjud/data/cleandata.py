@@ -209,7 +209,7 @@ def carga_limpieza_ingresos_materia():
 
     df_ingresos_materia.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_ingresos_materia, 'IngresosMateria')
+    data.save_feather(df_ingresos_materia, 'clean_IngresosMateria')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -272,7 +272,7 @@ def carga_limpieza_terminos_materia():
 
     # Reset el index para realizar feather
 
-    data.save_feather(df_termino_materia, 'TerminoMateria')
+    data.save_feather(df_termino_materia, 'clean_TerminosMateria')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -304,7 +304,7 @@ def carga_limpieza_ingresos_rol():
     tipo_causa = df_ingresos_rol[df_ingresos_rol['TIPO CAUSA']!='Ordinaria']
     df_ingresos_rol.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_ingresos_rol,'IngresosRol')
+    data.save_feather(df_ingresos_rol,'clean_IngresosRol')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -358,7 +358,7 @@ def carga_limpieza_terminos_rol():
     tipo_causa = df_termino_rol[df_termino_rol['TIPO CAUSA']!='Ordinaria']
     df_termino_rol.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_termino_rol,'TerminoRol')
+    data.save_feather(df_termino_rol,'clean_TerminosRol')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -408,7 +408,7 @@ def carga_limpieza_inventario():
     tipo_causa = df_inventario[df_inventario['TIPO CAUSA']!='Ordinaria']
     df_inventario.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_inventario,'Inventario')
+    data.save_feather(df_inventario,'clean_Inventario')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -464,7 +464,7 @@ def carga_limpieza_audiencias():
     tipo_causa = df_audiencias[df_audiencias['TIPO CAUSA']!='Ordinaria']
     df_audiencias.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_audiencias,'Audiencias')
+    data.save_feather(df_audiencias,'clean_Audiencias')
 
     click.echo('Generado archivo Feather. Proceso Terminado')
 
@@ -520,7 +520,7 @@ def carga_limpieza_duraciones():
     tipo_causa = df_duraciones[df_duraciones['TIPO CAUSA']!='Ordinaria']
     df_duraciones.drop(tipo_causa.index, axis=0, inplace=True)
 
-    data.save_feather(df_duraciones, 'Duraciones')
+    data.save_feather(df_duraciones, 'clean_Duraciones')
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 def carga_limpieza_delitos():
@@ -604,5 +604,5 @@ def carga_limpieza_delitos():
     # UNION DE AMBOS DATASET CON DELITOS VIGENTES Y NO VIGENTES
     df_delitos = pd.concat([df_delitos_vigentes,df_delitos_no_vigentes])
 
-    data.save_feather(df_delitos,'Delitos',path='data/processed/delitos')
+    data.save_feather(df_delitos,'clean_Delitos',path='data/processed/delitos')
     click.echo('Generado archivo Feather. Proceso Terminado')
