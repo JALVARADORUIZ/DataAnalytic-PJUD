@@ -7,8 +7,8 @@ clear-ingresos_materia:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_IngresosMateria.feather
-    md5: b8a3033c5646e520a597bbad591cbac3
-    size: 112855130
+    md5: 72a9caea87838a72a3f495229464c902
+    size: 112855122
 clear-terminos_materia:
   cmd: pjud clean-terminos-materia
   deps:
@@ -18,8 +18,8 @@ clear-terminos_materia:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_TerminosMateria.feather
-    md5: fd8d9594a5a6e9dc174681e573a7bd42
-    size: 160620402
+    md5: 7d13642f750b9ae05f964b41e1036e25
+    size: 160604090
 clear-ingresos_rol:
   cmd: pjud clean-ingresos-rol
   deps:
@@ -29,8 +29,8 @@ clear-ingresos_rol:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_IngresosRol.feather
-    md5: 158a363a3a6dad85b96ee33780532788
-    size: 71071506
+    md5: 7f1c6db3a972795c64949d886a2f6556
+    size: 71071498
 clear-terminos_rol:
   cmd: pjud clean-terminos-rol
   deps:
@@ -40,8 +40,8 @@ clear-terminos_rol:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_TerminosRol.feather
-    md5: cfdd48f1acaf242e7657883422e9ac17
-    size: 113720562
+    md5: 987810707cbdf64aa0d109d8018acf5c
+    size: 113711314
 clear-inventario:
   cmd: pjud clean-inventario
   deps:
@@ -51,8 +51,8 @@ clear-inventario:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_Inventario.feather
-    md5: e30004c4749da6408e6c9bf8f0896bef
-    size: 67021826
+    md5: 73d330351718d85a3735730b8276607b
+    size: 67021802
 clear-audiencias:
   cmd: pjud clean-audiencias
   deps:
@@ -62,8 +62,8 @@ clear-audiencias:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_Audiencias.feather
-    md5: 2da44c8e7dc5f7148eae79b91ce7785f
-    size: 236879210
+    md5: c9e2b1d5d244cdc8122baf6438e11474
+    size: 236879202
 clear-duraciones:
   cmd: pjud clean-duraciones
   deps:
@@ -73,8 +73,8 @@ clear-duraciones:
     nfiles: 35
   outs:
   - path: data/interim/pjud/clean_Duraciones.feather
-    md5: a12534bc27be03cb5a63a1203abaf3cd
-    size: 127627162
+    md5: e045a6018f6a37a7e587a1582dec24b8
+    size: 127627146
 clear-delitos:
   cmd: pjud clean-delitos
   deps:
@@ -84,40 +84,40 @@ clear-delitos:
     nfiles: 1
   outs:
   - path: data/processed/delitos/clean_Delitos.feather
-    md5: 77f6a97238ab33066de07f60f0932cb2
+    md5: 481eada40e62fd18b9e6983a75b692f0
     size: 30898
 generate-jgarantia:
   cmd: pjud organic-garantia
   deps:
   - path: data/raw/cot
-    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
-    size: 37665
-    nfiles: 3
+    md5: f2365096601db59770f9350970f07a27.dir
+    size: 47197
+    nfiles: 4
   outs:
   - path: data/interim/pjud/generates_JuzgadosGarantia.feather
-    md5: d108108911c25c72efcbb4cbb6c2951e
+    md5: cc0e4f45383aa6d8ae9f2111d5cfaf84
     size: 15202
 generate-top:
   cmd: pjud organic-top
   deps:
   - path: data/raw/cot
-    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
-    size: 37665
-    nfiles: 3
+    md5: f2365096601db59770f9350970f07a27.dir
+    size: 47197
+    nfiles: 4
   outs:
   - path: data/interim/pjud/generates_TribunalOral.feather
-    md5: 2a6ff0991efcde31cc272af56c9a936f
+    md5: f2bfbc9bf4577a75c570760d9f89f4bf
     size: 16394
 generate-jletras:
   cmd: pjud organic-jletras
   deps:
   - path: data/raw/cot
-    md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
-    size: 37665
-    nfiles: 3
+    md5: f2365096601db59770f9350970f07a27.dir
+    size: 47197
+    nfiles: 4
   outs:
   - path: data/interim/pjud/generates_JuzgadosLetras.feather
-    md5: d6781ac394d5f3cb84d9edc6a33840cb
+    md5: f9323710b037328cf605d47806ebf369
     size: 15338
 generate-comunas:
   cmd: pjud create-comunas
@@ -128,7 +128,7 @@ generate-comunas:
     nfiles: 1
   outs:
   - path: data/interim/subdere/generates_Provincias.feather
-    md5: 9cbc8ee4d5280d968ded2fd6a9ef68be
+    md5: eeb295bdac6508a045d4c7e32f549ecc
     size: 15170
 generate-censo:
   cmd: pjud create-censo
@@ -139,182 +139,221 @@ generate-censo:
     nfiles: 1
   outs:
   - path: data/processed/censo/generates_Censo2017.feather
-    md5: 8f99ee6ba40ee58534544136eae175f5
+    md5: f641b7ad754ee949eb88328bf125e225
     size: 54210
 generate-jpenales:
   cmd: pjud organic-jpenales
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   - path: data/interim/subdere
-    md5: 68e22360a6980e791c50d2514d24e65b.dir
+    md5: d3ef32fbfd80430ccdbe971bb09e91b2.dir
     size: 21318
     nfiles: 2
   outs:
   - path: data/processed/pjud/generates_JuzgadosPenales.feather
-    md5: 9a83796226be34cf5cd119f718cd8641
+    md5: b4a3310014e1f6c9748c2df8d4fc9cb1
     size: 18778
   - path: data/processed/pjud/generates_ListadoTribunales.feather
-    md5: 19ff7e3c5956c07bbf5430775340c80e
+    md5: 4da173c9938a3df3768bb6fba8a75efd
     size: 28130
   - path: data/processed/pjud/generates_TribunalesOrales.feather
-    md5: a60b10955682ebcd899014e5f4fdaccc
-    size: 18354
+    md5: 1361503e2fa2e225a738ce08804efc44
+    size: 18346
   - path: data/processed/subdere/generates_DataRegiones.feather
-    md5: 99abd0eba39b8748447f3ce637e4eb50
+    md5: c15977bfd56109cc62351a5497950fdc
     size: 17010
 process-materia:
   cmd: pjud process-materia
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   outs:
   - path: data/processed/pjud/processes_IngresosMateria.feather
-    md5: b872d4dfb22666adcda0a90fe5dca769
-    size: 125652010
+    md5: d94ded4441c58f7474d62e4a04b940b7
+    size: 125652002
   - path: data/processed/pjud/processes_TerminosMateria.feather
-    md5: 306c52bae301176f0456db9e2df21a08
-    size: 187560762
+    md5: 0645188bab17d48ba5e930afe59f6184
+    size: 187546586
 process-rol:
   cmd: pjud process-rol
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   outs:
   - path: data/processed/pjud/processes_IngresosRol.feather
-    md5: b350e2cb0cde8672ff74acb94927ae4a
-    size: 82971498
+    md5: 59656e1918dad202e35018afebcd6936
+    size: 82971490
   - path: data/processed/pjud/processes_TerminosRol.feather
-    md5: 9887cfacee6d5bbddf98eb414fc37245
-    size: 164459562
+    md5: 9c01828568758e3a80326a40ed08a4b8
+    size: 141145482
 process-audiencias:
   cmd: pjud process-audiencias
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   outs:
   - path: data/processed/pjud/processes_Audiencias.feather
-    md5: 75192a49660fb6af01b39ff2ae5e1907
-    size: 252943506
+    md5: b4f7c239736461ada590b7309ba89e6f
+    size: 294918722
 process-inventario:
   cmd: pjud process-inventario
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   outs:
   - path: data/processed/pjud/processes_Inventario.feather
-    md5: 09257c879f0d2c2a4b8c34d411b198ca
-    size: 57599706
+    md5: ed1e2d1f3ca1a2f324bc31759e672d02
+    size: 61893106
 process-duraciones:
   cmd: pjud process-duracion
   deps:
   - path: data/interim/pjud
-    md5: d811a741a2ec52faf1fd7ae27f85b6bf.dir
-    size: 889848880
+    md5: 65e57f8ae0b52c73233db94f8dd9f808.dir
+    size: 889823256
     nfiles: 11
   outs:
   - path: data/processed/pjud/processes_Duraciones.feather
-    md5: 9207684b444358486b83e99de46c3771
-    size: 120830666
+    md5: fcd5c1548661cf9add635b4d1af02f62
+    size: 141031538
 process-data_cortes:
   cmd: pjud process-cortes
   deps:
   - path: data/processed/censo/generates_Censo2017.feather
-    md5: 8f99ee6ba40ee58534544136eae175f5
+    md5: f641b7ad754ee949eb88328bf125e225
     size: 54210
   - path: data/processed/pjud/generates_ListadoTribunales.feather
-    md5: 19ff7e3c5956c07bbf5430775340c80e
+    md5: 4da173c9938a3df3768bb6fba8a75efd
     size: 28130
   - path: data/processed/pjud/processes_TerminosRol.feather
-    md5: 9887cfacee6d5bbddf98eb414fc37245
-    size: 164459562
+    md5: 9c01828568758e3a80326a40ed08a4b8
+    size: 141145482
   outs:
   - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
-    md5: b880c5a4138f0fb96569307afb5b8819
-    size: 27554
+    md5: 18ea4fe94b77b389cdf73bca335cfa62
+    size: 27570
   - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Tribunales.feather
-    md5: 35c2d45fcca4b2d07cc765379f899ebb
-    size: 61698
+    md5: 2fdf2156daee9631957ad24f08803c9e
+    size: 61730
   - path: data/processed/pjud/processes_ListadoTribunalesyCortes.feather
-    md5: 4fd3d1dd92760bd81038bbb18fba57e0
-    size: 34954
+    md5: df32f5af071d32de80995e7bb9f5b890
+    size: 34986
 consolidate-materia:
   cmd: pjud consolidate-materia
   deps:
   - path: data/processed/pjud/processes_IngresosMateria.feather
-    md5: b872d4dfb22666adcda0a90fe5dca769
-    size: 125652010
+    md5: d94ded4441c58f7474d62e4a04b940b7
+    size: 125652002
   - path: data/processed/pjud/processes_TerminosMateria.feather
-    md5: 306c52bae301176f0456db9e2df21a08
-    size: 187560762
+    md5: 0645188bab17d48ba5e930afe59f6184
+    size: 187546586
   outs:
   - path: data/processed/pjud/consolidated_CausasGarantiaMateria.feather
-    md5: 2c7893bdac7443d4d99d0f215f6f2061
-    size: 200500674
+    md5: cde1c8cc85b5a0a955746d3a11121f73
+    size: 203312298
   - path: data/processed/pjud/consolidated_JuicioOralesMateria.feather
-    md5: 5bdd0e21684bb6d96e0467f1ab4b8d84
-    size: 5351506
+    md5: bb2c02c2d8e26628eba0331d13b5371f
+    size: 5454098
   - path: data/processed/pjud/consolidated_Materia.feather
-    md5: 75a5badf6fe1284d56f4cd694193ba6c
-    size: 205913570
+    md5: ff68185b166c620b08f1794c09e38206
+    size: 208778570
 consolidate-rol:
   cmd: pjud consolidate-rol
   deps:
   - path: data/processed/pjud/processes_IngresosRol.feather
-    md5: b350e2cb0cde8672ff74acb94927ae4a
-    size: 82971498
+    md5: 59656e1918dad202e35018afebcd6936
+    size: 82971490
   - path: data/processed/pjud/processes_TerminosRol.feather
-    md5: 9887cfacee6d5bbddf98eb414fc37245
-    size: 164459562
+    md5: 9c01828568758e3a80326a40ed08a4b8
+    size: 141145482
   outs:
   - path: data/processed/pjud/consolidated_CausasGarantiaRol.feather
-    md5: 8f7328f0fe889fa4e63faeef8609ace6
-    size: 155369274
+    md5: 9be98ade65b42d92ec7f02bd1252c0bf
+    size: 146797618
   - path: data/processed/pjud/consolidated_JuicioOralesRol.feather
-    md5: 619ae09fa44410139ef091d037bf56ec
-    size: 2905922
+    md5: 69891e0722e4a09ab48ae0be3b0becf5
+    size: 2985842
   - path: data/processed/pjud/consolidated_Rol.feather
-    md5: 5875715cf070ff021dd32ac4946e1a5a
-    size: 158365738
+    md5: c695a1fda882c15b12f43910dcabee18
+    size: 149809810
 consolidate-materia_rol:
   cmd: pjud consolidate-materia-rol
   deps:
   - path: data/processed/pjud/consolidated_Materia.feather
-    md5: 75a5badf6fe1284d56f4cd694193ba6c
-    size: 205913570
+    md5: ff68185b166c620b08f1794c09e38206
+    size: 208778570
   - path: data/processed/pjud/consolidated_Rol.feather
-    md5: 5875715cf070ff021dd32ac4946e1a5a
-    size: 158365738
+    md5: c695a1fda882c15b12f43910dcabee18
+    size: 149809810
   outs:
   - path: data/processed/pjud/consolidated_Materia_Rol.feather
-    md5: 7fc79523dd7f8f4b3e628921b5be6bad
-    size: 409197050
-consolidate-full_data:
-  cmd: pjud consolidate-fulldata
+    md5: 1181965ed1629026859013c2d3b1110f
+    size: 270785786
+consolidate-fulldata_causa:
+  cmd: pjud consolidate-fulldata_causa
   deps:
-  - path: data/processed/delitos/clean_delitos.feather
-    md5: 77f6a97238ab33066de07f60f0932cb2
+  - path: data/processed/delitos/clean_Delitos.feather
+    md5: 481eada40e62fd18b9e6983a75b692f0
     size: 30898
   - path: data/processed/pjud/consolidated_Materia_Rol.feather
-    md5: 7fc79523dd7f8f4b3e628921b5be6bad
-    size: 409197050
-  - path: data/processed/pjud/processes_Audiencias.feather
-    md5: 75192a49660fb6af01b39ff2ae5e1907
-    size: 252943506
+    md5: 1181965ed1629026859013c2d3b1110f
+    size: 270785786
   - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
-    md5: b880c5a4138f0fb96569307afb5b8819
-    size: 27554
+    md5: 18ea4fe94b77b389cdf73bca335cfa62
+    size: 27570
   outs:
-  - path: data/processed/pjud/consolidated_FullData.feather
-    md5: 807fb6ef7ac4362f27af97b306e47d81
-    size: 1092188738
+  - path: data/processed/pjud/consolidated_FullData_Causa.feather
+    md5: 18bd0346a4f00b36e75d0780ba4a7de1
+    size: 423727970
+consolidate-fulldata_audiencias:
+  cmd: pjud consolidate-fulldata_audiencias
+  deps:
+  - path: data/processed/pjud/processes_Audiencias.feather
+    md5: b4f7c239736461ada590b7309ba89e6f
+    size: 294918722
+  - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    md5: 18ea4fe94b77b389cdf73bca335cfa62
+    size: 27570
+  outs:
+  - path: data/processed/pjud/consolidated_FullData_Audiencias.feather
+    md5: c6cdbf3d0935d96f1a9acac8db450671
+    size: 495729162
+consolidate-fulldata_inventario:
+  cmd: pjud consolidate-fulldata_inventario
+  deps:
+  - path: data/processed/delitos/clean_Delitos.feather
+    md5: 481eada40e62fd18b9e6983a75b692f0
+    size: 30898
+  - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    md5: 18ea4fe94b77b389cdf73bca335cfa62
+    size: 27570
+  - path: data/processed/pjud/processes_Inventario.feather
+    md5: ed1e2d1f3ca1a2f324bc31759e672d02
+    size: 61893106
+  outs:
+  - path: data/processed/pjud/consolidated_FullData_Inventario.feather
+    md5: 270e83a85b76c45341760542d37af402
+    size: 137802058
+consolidate-fulldata_duracion:
+  cmd: pjud consolidate-fulldata_duracion
+  deps:
+  - path: data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    md5: 18ea4fe94b77b389cdf73bca335cfa62
+    size: 27570
+  - path: data/processed/pjud/processes_Duraciones.feather
+    md5: fcd5c1548661cf9add635b4d1af02f62
+    size: 141031538
+  outs:
+  - path: data/processed/pjud/consolidated_FullData_Duracion.feather
+    md5: 44a025a53613b60fe84c3d175fb1d5be
+    size: 268611714

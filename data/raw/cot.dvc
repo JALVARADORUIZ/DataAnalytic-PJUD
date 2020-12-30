@@ -1,3 +1,5 @@
 outs:
-- md5: 3cfdaf47ad79010fa09eacded8e338a1.dir
+- md5: f2365096601db59770f9350970f07a27.dir
   path: cot
+  size: 47197
+  nfiles: 4

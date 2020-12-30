@@ -154,12 +154,34 @@ stages:
     - data/processed/pjud/consolidated_Rol.feather
     outs:
     - data/processed/pjud/consolidated_Materia_Rol.feather
-  consolidate-full_data:
-    cmd: pjud consolidate-fulldata
+
+  consolidate-fulldata_causa:
+    cmd: pjud consolidate-fulldata_causa
     deps:
-    - data/processed/delitos/clean_delitos.feather
+    - data/processed/delitos/clean_Delitos.feather
     - data/processed/pjud/consolidated_Materia_Rol.feather
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    outs:
+    - data/processed/pjud/consolidated_FullData_Causa.feather
+  consolidate-fulldata_audiencias:
+    cmd: pjud consolidate-fulldata_audiencias
+    deps:
     - data/processed/pjud/processes_Audiencias.feather
     - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
     outs:
-    - data/processed/pjud/consolidated_FullData.feather
+    - data/processed/pjud/consolidated_FullData_Audiencias.feather
+  consolidate-fulldata_inventario:
+    cmd: pjud consolidate-fulldata_inventario
+    deps:
+    - data/processed/delitos/clean_Delitos.feather
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    - data/processed/pjud/processes_Inventario.feather
+    outs:
+    - data/processed/pjud/consolidated_FullData_Inventario.feather
+  consolidate-fulldata_duracion:
+    cmd: pjud consolidate-fulldata_duracion
+    deps:
+    - data/processed/pjud/processes_DataConsolidada_Poblacion_Jurisdiccion.feather
+    - data/processed/pjud/processes_Duraciones.feather
+    outs:
+    - data/processed/pjud/consolidated_FullData_Duracion.feather
