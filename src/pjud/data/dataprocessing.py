@@ -98,6 +98,9 @@ def processing_rol(path_interim = "data/interim/pjud"):
     filtro_null = df_termino_rol[df_termino_rol['FECHA INGRESO'].isnull()]
     df_termino_rol.drop(filtro_null.index, axis=0, inplace=True)
 
+    filtro_fecha = df_termino_rol[df_termino_rol['FECHA INGRESO'] <='2014-12-31']
+    df_termino_rol.drop(filtro_fecha.index, axis = 0, inplace = True)
+
     click.echo('Procesando Error en fechas ...')
     df_termino_rol = df_termino_rol.progress_apply(data.transformdata.fechas_cambiadas, axis=1)
 
@@ -114,22 +117,22 @@ def processing_audiencias(path_interim = "data/interim/pjud"):
     click.echo('Procesando Fecha de programación ...')
     df_audiencias = df_audiencias.progress_apply(data.transformdata.fecha_programada, axis=1)
 
-    filtro_fecha = df_audiencias[df_audiencias['FECHA PROGRAMACION AUDIENCIA']<='2014-12-31']
-    df_audiencias.drop(filtro_fecha.index, axis=0, inplace=True)
+    #filtro_fecha = df_audiencias[df_audiencias['FECHA PROGRAMACION AUDIENCIA']<='2014-12-31']
+    #df_audiencias.drop(filtro_fecha.index, axis=0, inplace=True)
 
     click.echo('Normalizando nombres ...')
     df_audiencias['TRIBUNAL'] = df_audiencias['TRIBUNAL'].progress_apply(data.cleandata.cambio_nombre_juzgados)
 
     # Verifico si existen audiencias de causas del período anterior a 2015
-    años = range(2000,2015)
-    fuera_rango = []
+    #años = range(2000,2015)
+    #fuera_rango = []
 
-    for año in range(len(años)):
-        var = "-" + str(años[año])
-        fuera_rango.append(df_audiencias[df_audiencias['RIT'].str.contains(var)])
+    #for año in range(len(años)):
+    #    var = "-" + str(años[año])
+    #    fuera_rango.append(df_audiencias[df_audiencias['RIT'].str.contains(var)])
     
-    df_eliminar = pd.concat(fuera_rango, axis=0)
-    df_audiencias.drop(df_eliminar.index, axis=0, inplace=True)
+    #df_eliminar = pd.concat(fuera_rango, axis=0)
+    #df_audiencias.drop(df_eliminar.index, axis=0, inplace=True)
 
     path_processed = "data/processed/pjud"
     data.save_feather(df_audiencias, 'processes_Audiencias', path_processed)
@@ -139,8 +142,8 @@ def processing_inventario(path_interim = "data/interim/pjud"):
     tqdm.pandas()
 
     df_inventario = pd.read_feather(f"{path_interim}/clean_Inventario.feather")
-    filtro_fecha = df_inventario[df_inventario['FECHA INGRESO']<='2014-12-31']
-    df_inventario.drop(filtro_fecha.index, axis=0, inplace=True)
+    #filtro_fecha = df_inventario[df_inventario['FECHA INGRESO']<='2014-12-31']
+    #df_inventario.drop(filtro_fecha.index, axis=0, inplace=True)
 
     filtro_null = df_inventario[df_inventario['FECHA INGRESO'].isnull()]
     df_inventario.drop(filtro_null.index, axis=0, inplace=True)
@@ -174,8 +177,8 @@ def processing_duracion(path_interim = "data/interim/pjud"):
 
     df_duracion = pd.read_feather(f"{path_interim}/clean_Duraciones.feather")
 
-    filtro_fecha = df_duracion[df_duracion['FECHA INGRESO']<='2014-12-31']
-    df_duracion.drop(filtro_fecha.index, axis=0, inplace=True)
+    #filtro_fecha = df_duracion[df_duracion['FECHA INGRESO']<='2014-12-31']
+    #df_duracion.drop(filtro_fecha.index, axis=0, inplace=True)
 
     filtro_null = df_duracion[df_duracion['FECHA INGRESO'].isnull()]
     df_duracion.drop(filtro_null.index, axis=0, inplace=True)
@@ -187,15 +190,15 @@ def processing_duracion(path_interim = "data/interim/pjud"):
     data.save_feather(df_duracion, 'processes_Duraciones', path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
-def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data/processed/censo'):
+def processing_data_cortes(path_pjud = "data/processed/pjud", path_censo = "data/processed/censo"):
     tqdm.pandas()
 
     df_regiones = pd.read_feather(f"{path_pjud}/processes_TerminosRol.feather")
     df_tribunales = pd.read_feather(f"{path_pjud}/generates_ListadoTribunales.feather")
     df_censo = pd.read_feather(f"{path_censo}/generates_Censo2017.feather")
-    #df_dotacion = pd.read_feather(f"{path_pjud}/ListadoTribunales.feather")
 
     # Extraigo Cortes de Apelaciones asociadas a Juzgados desde este DataSet
+
     data_cortes_apelaciones = pd.unique(df_regiones[['CORTE','TRIBUNAL']].values.ravel())
     cortes_tribunales = []
 
@@ -203,64 +206,62 @@ def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data
         if not data_cortes_apelaciones[datacorte].find('C.A.') == -1:
             corte_apelacion = data_cortes_apelaciones[datacorte]
         else:
-            tribunal = data_cortes_apelaciones[datacorte]
-            if tribunal.find("TRIBUNAL") != -1:
-                separa_ciudad = tribunal.split("PENAL ")
+            datatribunal = data_cortes_apelaciones[datacorte]
+            if datatribunal.find("TRIBUNAL") != -1:
+                separa_ciudad = datatribunal.split("PENAL ")
             else:
-                separa_ciudad = tribunal.split("GARANTIA ")
+                separa_ciudad = datatribunal.split("GARANTIA ")
             ciudad = separa_ciudad[1]
-            cortes_tribunales.append([corte_apelacion,ciudad])
+            cortes_tribunales.append([corte_apelacion,ciudad,datatribunal])
+
     
     lista_cortes = []
+    poblacion = []
 
     for trib in df_tribunales.index:
         for indice in range(len(cortes_tribunales)):
-            if df_tribunales['ASIENTO'][trib] == cortes_tribunales[indice][1]:
+            if df_tribunales['TRIBUNAL'][trib] == cortes_tribunales[indice][2]:
                 corte = cortes_tribunales[indice][0]
                 lista_cortes.append(corte)
                 break
 
-    df_tribunales['CORTE'] = lista_cortes
-
-    poblacion = []
-
-    for trib in df_tribunales.index:
-        for indice in df_censo.index:
-            if df_tribunales['COMUNA'][trib] == df_censo['NOMBRE COMUNA'][indice]:
-                censado = df_censo['TOTAL POBLACIÓN EFECTIVAMENTE CENSADA'][indice]
-                hombres = df_censo['HOMBRES '][indice]
-                mujeres = df_censo['MUJERES'][indice]
-                urbana = df_censo['TOTAL ÁREA URBANA'][indice]
-                rural = df_censo['TOTAL ÁREA RURAL'][indice]
+        for censo in df_censo.index:
+            if df_tribunales['COMUNA'][trib] == df_censo['NOMBRE COMUNA'][censo]:
+                censado = df_censo['TOTAL POBLACIÓN EFECTIVAMENTE CENSADA'][censo]
+                hombres = df_censo['HOMBRES '][censo]
+                mujeres = df_censo['MUJERES'][censo]
+                urbana = df_censo['TOTAL ÁREA URBANA'][censo]
+                rural = df_censo['TOTAL ÁREA RURAL'][censo]
                 poblacion.append([censado, hombres, mujeres, urbana, rural])
                 break
-
+    
+    df_tribunales['CORTE'] = lista_cortes
+ 
     df_poblacion = pd.DataFrame(poblacion, columns = ['POBLACION', 'HOMBRES', 'MUJERES', 'URBANO', 'RURAL'])
-
     df_tribunales_poblacion = pd.concat([df_tribunales, df_poblacion.reindex(df_tribunales.index)], axis=1)
 
     # Creo un dataset con informacion de poblacion que abarca cada tribunal !!!
     tribunales = df_tribunales['TRIBUNAL'].unique()
     poblacion_tribunal = []
 
-    for trib in range(len(tribunales)):  
+    for tri in range(len(tribunales)):  
         poblacion = 0
         hombres = 0
         mujeres = 0
         urbana = 0
         rural = 0
         comunas = []
-        for indice in df_tribunales_poblacion.index:
-            if tribunales[trib] == df_tribunales_poblacion['TRIBUNAL'][indice]:
-                region = df_tribunales_poblacion['REGION'][indice]
-                corte = df_tribunales_poblacion['CORTE'][indice]
-                tribunal = df_tribunales_poblacion['TRIBUNAL'][indice]
-                poblacion = int(df_tribunales_poblacion['POBLACION'][indice]) + poblacion
-                hombres = int(df_tribunales_poblacion['HOMBRES'][indice]) + hombres
-                mujeres = int(df_tribunales_poblacion['MUJERES'][indice]) + mujeres
-                urbana = int(df_tribunales_poblacion['URBANO'][indice]) + urbana
-                rural = int(df_tribunales_poblacion['RURAL'][indice]) + rural
-                comunas.append(df_tribunales_poblacion['COMUNA'][indice])
+        for ind in df_tribunales_poblacion.index:
+            if tribunales[tri] == df_tribunales_poblacion['TRIBUNAL'][ind]:
+                region = df_tribunales_poblacion['REGION'][ind]
+                corte = df_tribunales_poblacion['CORTE'][ind]
+                tribunal = df_tribunales_poblacion['TRIBUNAL'][ind]
+                poblacion = int(df_tribunales_poblacion['POBLACION'][ind]) + poblacion
+                hombres = int(df_tribunales_poblacion['HOMBRES'][ind]) + hombres
+                mujeres = int(df_tribunales_poblacion['MUJERES'][ind]) + mujeres
+                urbana = int(df_tribunales_poblacion['URBANO'][ind]) + urbana
+                rural = int(df_tribunales_poblacion['RURAL'][ind]) + rural
+                comunas.append(df_tribunales_poblacion['COMUNA'][ind])
                 
         poblacion_tribunal.append([region, corte, tribunal, poblacion, hombres, mujeres, urbana, rural, comunas])
         
@@ -271,23 +272,26 @@ def processing_data_cortes(path_pjud = 'data/processed/pjud', path_censo = 'data
     # Agregare data de cantidad de jueces a esta Data y Asientio de cada Tribunal.
 
     dotacion = []
-    for indice in df_poblacion_jurisdiccion.index:
-        for trib in df_tribunales.index:
-            if df_poblacion_jurisdiccion['TRIBUNAL'][indice] == df_tribunales['TRIBUNAL'][trib]:
-                jueces = df_tribunales['JUECES'][trib]
-                asiento = df_tribunales['ASIENTO'][trib]
-                tipo = df_tribunales['TIPO JUZGADO'][trib]
+    for i in df_poblacion_jurisdiccion.index:
+        for t in df_tribunales.index:
+            if df_poblacion_jurisdiccion['TRIBUNAL'][i] == df_tribunales['TRIBUNAL'][t]:
+                jueces = df_tribunales['JUECES'][t]
+                asiento = df_tribunales['ASIENTO'][t]
+                tipo = df_tribunales['TIPO JUZGADO'][t]
                 row = [jueces, asiento, tipo]
                 dotacion.append(row)
                 break
+            
     columnas = ['JUECES','ASIENTO','TIPO JUZGADO']
     df_anexo = pd.DataFrame(dotacion, columns=columnas)
 
     df_poblacion_jurisdiccion = pd.concat([df_poblacion_jurisdiccion,df_anexo], axis=1)
 
-    data.save_feather(df_tribunales, 'processes_ListadoTribunalesyCortes', path_pjud)
-    data.save_feather(df_tribunales_poblacion, 'processes_DataConsolidada_Poblacion_Tribunales', path_pjud)
-    data.save_feather(df_poblacion_jurisdiccion, 'processes_DataConsolidada_Poblacion_Jurisdiccion', path_pjud)
+    
+    path_processed = "data/processed/pjud"
+    data.save_feather(df_tribunales, "processes_ListadoTribunalesyCortes", path_processed)
+    data.save_feather(df_tribunales_poblacion, "processes_DataConsolidada_Poblacion_Tribunales", path_processed)
+    data.save_feather(df_poblacion_jurisdiccion, "processes_DataConsolidada_Poblacion_Jurisdiccion", path_processed)
     click.echo('Generado archivo Feather. Proceso Terminado')
 
 

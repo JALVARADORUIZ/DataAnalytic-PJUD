@@ -43,7 +43,7 @@ def wrapper_garantia():
     jurisdicciones.garantia()
 
 @main.command('organic-top')
-def wrapper_garantia():
+def wrapper_top():
     jurisdicciones.top()
 
 @main.command('organic-jletras')
@@ -98,6 +98,18 @@ def wrapper_consolidated_rol():
 def wrapper_consolidated_materia_rol():
     dataconsolidated.consolidated_materia_rol()
 
-@main.command('consolidate-fulldata')
-def wrapper_consolidated_full():
-    dataconsolidated.consolidated_full()
+@main.command('consolidate-fulldata_causa')
+def wrapper_consolidated_fulldata_causa():
+    dataconsolidated.consolidated_fulldata_causa()
+
+@main.command('consolidate-fulldata_audiencias')
+def wrapper_consolidated_fulldata_audiencias():
+    dataconsolidated.consolidated_fulldata_audiencias()
+
+@main.command('consolidate-fulldata_inventario')
+def wrapper_consolidated_fulldata_inventario():
+    dataconsolidated.consolidated_fulldata_inventario()
+
+@main.command('consolidate-fulldata_duracion')
+def wrapper_consolidated_fulldata_duracion():
+    dataconsolidated.consolidated_fulldata_duracion()

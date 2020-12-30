@@ -2,7 +2,7 @@ import os
 
 
 
-def save_feather(df, filename, path = "data/interim/pjud"):
+def save_feather(df, filename, path):
     df.reset_index(inplace=True)
 
     # Guardamos dataset como archivo feather

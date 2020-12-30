@@ -1,7 +1,20 @@
 Analisis OpenData Pjud
 ==============================
 
-Este proyecto busca analizar los datos abiertos del Poder Judicial de Chile.
+El Poder Judicial de la República de Chile está constituido por los tribunales nacionales, autónomos e independientes, establecidos por la ley, a los cuales les corresponde la función jurisdiccional, es decir, el conocimiento y resolución de conflictos de relevancia jurídica, cualquiera que sea su naturaleza o calidad de las personas que en ellos intervengan, sin perjuicio de las excepciones constitucionales o legales.
+
+Nuestro proyecto busca analizar los datos de esta institución referente al ámbito Penal, la cual se refiere al conjunto de comportamientos que dan lugar a un hecho ilícito. 
+
+Un delito consiste en un comportamiento culpable y contrario a la ley que conlleva una pena o sanción, la cual se juzga en tribunales penales como son los Juzgados de Garantía, Juzgados de letras y Garantía y los Tribunales Orales, que además se encuentran organizados por territorio y asociados a Cortes de Apelaciones.
+
+Los registros que se analizan se basan en el proyecto de Open Data del Poder Judicial (http://numeros.pjud.cl) donde se encuentran los datos de todos los tribunales del país en el período 2015 al 2019.
+
+Entre las tareas realizadas en este proyecto estan:
+
+-	Extracción de la Data
+-	Analisis preliminar de los datos extraidos
+-	Limpieza y transformación de la Data
+-	Visualización global de los datos mediante diversos criterios.
 
 Project Organization
 ------------

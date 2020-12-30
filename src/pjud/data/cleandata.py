@@ -15,6 +15,15 @@ def convierte_fecha(fecha):
     
     return datetime(year,month,day) 
 
+def obtiene_año(rit): 
+    try:
+        rol,year = map(int,rit.split(sep = "-"))
+    except:
+        #print(f"no pude ejecutar {fecha}")
+        return pd.NaT
+    
+    return (year) 
+
 def elimina_tilde(str_variable):
     replacements = {'Á': 'A',
                     'É': 'E',
@@ -211,7 +220,7 @@ def carga_limpieza_ingresos_materia():
 
     data.save_feather(df_ingresos_materia, 'clean_IngresosMateria')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_IngresosMateria.feather'. Proceso Terminado")
 
 def carga_limpieza_terminos_materia():
     df_termino_materia = load_concatenate_by_filename('Términos por Materia Penal')
@@ -260,6 +269,10 @@ def carga_limpieza_terminos_materia():
     cols = df_termino_materia.select_dtypes(include = ["object"]).columns
     df_termino_materia[cols] = df_termino_materia[cols].progress_apply(elimina_tilde)
 
+    # Limpieza de RIT 
+    click.echo('Limpieza de RIT')
+    df_termino_materia['RIT'] = df_termino_materia['RIT'].progress_apply(limpia_rit)
+
     # Categorizar variables
 
     df_termino_materia['CORTE'] = df_termino_materia['CORTE'].astype('category')
@@ -274,7 +287,7 @@ def carga_limpieza_terminos_materia():
 
     data.save_feather(df_termino_materia, 'clean_TerminosMateria')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_TerminosMateria.feather'. Proceso Terminado")
 
 def carga_limpieza_ingresos_rol():
     df_ingresos_rol = load_concatenate_by_filename('Ingresos por Rol Penal')
@@ -306,7 +319,7 @@ def carga_limpieza_ingresos_rol():
 
     data.save_feather(df_ingresos_rol,'clean_IngresosRol')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clena_IngresosRol.feather'. Proceso Terminado")
 
 def carga_limpieza_terminos_rol():
     df_termino_rol = load_concatenate_by_filename('Términos por Rol Penal')
@@ -349,6 +362,9 @@ def carga_limpieza_terminos_rol():
     click.echo('Elimino espacios en las columnas tipo objeto')
     df_termino_rol = df_termino_rol.progress_apply(elimina_espacios, axis=0)
 
+    click.echo('Limpieza de RIT')
+    df_termino_rol['RIT'] = df_termino_rol['RIT'].progress_apply(limpia_rit)
+
     # Transformamos en variables categoricas
 
     df_termino_rol['CORTE'] = df_termino_rol['CORTE'].astype('category')
@@ -360,7 +376,7 @@ def carga_limpieza_terminos_rol():
 
     data.save_feather(df_termino_rol,'clean_TerminosRol')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather clean_TerminosRol.feather'. Proceso Terminado")
 
 def carga_limpieza_inventario():
     df_inventario = load_concatenate_by_filename('Inventario Causas en Tramitación Penal')
@@ -410,7 +426,7 @@ def carga_limpieza_inventario():
 
     data.save_feather(df_inventario,'clean_Inventario')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_Inventario.feather'. Proceso Terminado")
 
 def carga_limpieza_audiencias():
     df_audiencias = load_concatenate_by_filename('Audiencias Realizadas Penal')
@@ -466,7 +482,7 @@ def carga_limpieza_audiencias():
 
     data.save_feather(df_audiencias,'clean_Audiencias')
 
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_Audiencias.feather'. Proceso Terminado")
 
 def carga_limpieza_duraciones():
     df_duraciones = load_concatenate_by_filename('Duraciones por Rol Penal')
@@ -521,12 +537,12 @@ def carga_limpieza_duraciones():
     df_duraciones.drop(tipo_causa.index, axis=0, inplace=True)
 
     data.save_feather(df_duraciones, 'clean_Duraciones')
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_Duraciones.feather'. Proceso Terminado")
 
 def carga_limpieza_delitos():
     tqdm.pandas()
     path_raw = "data/raw/delitos"
-    codigos_delitos = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "codigos vigentes")
+    codigos_delitos = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "codigos vigentes", engine='openpyxl')
     
     # elimino filas con NaN
     codigos_delitos = codigos_delitos.drop_duplicates() 
@@ -567,7 +583,7 @@ def carga_limpieza_delitos():
     df_delitos_vigentes['COD. MATERIA'] = df_delitos_vigentes['COD. MATERIA'].fillna(0).astype('int16')
 
     # CARGA Y LIMPIEZA DE DATOS RELACIONADOS A DELITOS NO VIGENTES
-    codigos_delitos_novigentes = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "Codigos no vigentes")
+    codigos_delitos_novigentes = pd.read_excel(f"{path_raw}/codigos_penal_2020.xlsx", sheet_name = "Codigos no vigentes", engine='openpyxl')
 
     # cambio nombres columnas
 
@@ -605,4 +621,4 @@ def carga_limpieza_delitos():
     df_delitos = pd.concat([df_delitos_vigentes,df_delitos_no_vigentes])
 
     data.save_feather(df_delitos,'clean_Delitos',path='data/processed/delitos')
-    click.echo('Generado archivo Feather. Proceso Terminado')
+    click.echo("Generado archivo Feather 'clean_Delitos.feather'. Proceso Terminado")
